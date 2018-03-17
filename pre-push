@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Pre-push driver hook. To deploy, copy to a repository's .git/hooks
+# directory, uncomment the desired auxiliary hooks below, and adjust
+# their paths. The auxiliary hooks themselves need not be edited.
+#
+# Auxiliary hooks...
+#   - should never write to these variables:
+#     - local_ref
+#     - local_sha1
+#     - remote_name
+#     - remote_ref
+#     - remote_sha1
+#     - remote_url
+#   - should thoroughly initialize other variables to avoid using values
+#     left over from previously sourced hooks.
+#   - should invoke return(1) with a nonzero argument if the push ought
+#     to be aborted, and zero otherwise.
+#   - should not invoke exit(1).
+#
+# Refer to the githooks(1) man page for detailed information on pre-push
+# hooks (https://git-scm.com/docs/githooks/2.2.0#_pre_push).
+
+readonly remote_name="$1"
+readonly remote_url="$2"
+
+while IFS=' ' read -r local_ref local_sha1 remote_ref remote_sha1
+do
+    # . /path/to/aux-hook.sh || exit
+done
