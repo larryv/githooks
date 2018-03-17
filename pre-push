@@ -26,5 +26,5 @@ readonly remote_url="$2"
 
 while IFS=' ' read -r local_ref local_sha1 remote_ref remote_sha1
 do
-    # . /path/to/aux-hook.sh || exit
+    # . /path/to/pre-push-require-sigs.sh || exit
 done
