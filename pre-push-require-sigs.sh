@@ -5,7 +5,7 @@
 # Git/PGP misconfiguration.
 #
 # Refer to the githooks(1) man page for detailed information on pre-push
-# hooks (https://git-scm.com/docs/githooks/2.2.0#_pre_push).
+# hooks (https://git-scm.com/docs/githooks/2.16.2#_pre_push).
 
 if [ "${local_sha1}" = 0000000000000000000000000000000000000000 ]
 then
