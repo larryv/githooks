@@ -27,7 +27,7 @@ fi
 if ! git rev-list "$range" | xargs git verify-commit 2>/dev/null
 then
     printf >&2 'pre-push-require-sigs: %s\n' \
-        "could not verify ${local_ref}" \
+        "could not verify all commits in ${local_ref}" \
         'check for unsigned commits or missing PGP public keys'
     return 1
 fi

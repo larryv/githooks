@@ -2,7 +2,8 @@
 #
 # Pre-push driver hook. To deploy, copy to a repository's .git/hooks
 # directory, uncomment the desired auxiliary hooks below, and adjust
-# their paths. The auxiliary hooks themselves need not be edited.
+# their paths. New ones can be added as well. The auxiliary hooks
+# themselves need not be edited.
 #
 # Auxiliary hooks...
 #   - should never write to these variables:
