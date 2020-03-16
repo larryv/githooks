@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+# Polymorphic driver hook.
+#
+# When installed to a repository's hooks directory as FOO and invoked by Git,
+# runs every executable file named FOO-* in that directory, passing along all
+# relevant information. Exits with a nonzero status if any invoked executable
+# does so (or if Git is extremely broken) and zero otherwise.
+#
+# See also: https://git-scm.com/docs/githooks/2.24.0
+
+
+# Git prepends its exec directory to PATH, so this just works.
+. git-sh-setup
+
+# Preserve trailing newlines here (https://www.etalabs.net/sh_tricks.html,
+# § "Getting non-clobbered output from command substitution"), although anyone
+# who sets core.hooksPath to a newline-suffixed value is asking for trouble.
+hooks_dir=$(git rev-parse --git-path hooks && echo x) || exit
+hooks_dir=${hooks_dir%??}
+
+# Git executes hooks "normally", so $0 should contain the pathname.
+hooks_prefix=${0##*/}
+
+case $hooks_prefix in
+    post-receive | post-rewrite | pre-push | pre-receive)
+        # At least one line is coming on standard input, so send them through.
+        cat
+        ;;
+    *)
+        # Nothing's coming on standard input, so avoid blocking on it, but
+        # coax one iteration out of the while loop.
+        echo
+        ;;
+esac | while IFS= read -r line; do
+    for hook in "$hooks_dir/$hooks_prefix"-*; do
+        # Ignore nonexecutable hooks because Git does. Technically there's
+        # a TOCTOU bug here, but I don't think it's worth worrying about.
+        if [ -f "$hook" ] && [ -x "$hook" ]; then
+            printf %s\\n "$line" | "$hook" "$@" || exit
+        fi
+    done
+done

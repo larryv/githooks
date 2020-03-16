@@ -1,0 +1,61 @@
+#!/usr/bin/env sh
+
+# Pre-push hook that blocks WIP ("work in progress") commits.
+#
+# Exits with a nonzero status if any outbound commits are WIPs and zero
+# otherwise. A commit is considered a WIP if its commit message begins with
+# "FIXUP", "NOCOMMIT", "REWORD", "SQUASH", or "WIP" (matched
+# case-sensitively). These can be enclosed in braces ("{WIP}"), brackets
+# ("[WIP]"), or parentheses ("(WIP)"). They can also be bare ("WIP") if they
+# are not immediately followed by a letter.
+#
+# See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+
+
+exec >&2
+
+# Git prepends its exec directory to PATH, so this just works.
+. git-sh-setup
+
+readonly keywords='FIXUP|NOCOMMIT|REWORD|SQUASH|WIP'
+
+# Used in the `git rev-list` format to avoid wrapping. Not really important,
+# so if tput(1) fails (https://mywiki.wooledge.org/BashFAQ/091), just assume
+# there are 80 columns and move on. The format begins with 40 hex digits,
+# 4 spaces, and 1 hyphen-minus, so subtract 45.
+[ -n "$COLUMNS" ] || COLUMNS=$(tput cols) || COLUMNS=80
+readonly max_subject_width=$((COLUMNS - 45))
+
+status=0
+while read -r local_ref local_sha1 remote_ref remote_sha1
+do
+    if [ "$local_sha1" = 0000000000000000000000000000000000000000 ]; then
+        # Deleting a remote ref doesn't push any commits.
+        continue
+    elif [ "$remote_sha1" = 0000000000000000000000000000000000000000 ]; then
+        # Creating new remote ref.
+        range=$local_sha1
+    else
+        # Updating existing remote ref.
+        range=$remote_sha1..$local_sha1
+    fi
+
+    git rev-list --extended-regexp --grep="^($keywords)([^[:alpha:]]|$)" \
+        --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
+        --pretty="  %H - %<($max_subject_width,trunc)%s" "$range" \
+    | {
+        # The first line is a "commit [SHA1]" line, so it's safe to discard.
+        if read; then
+            printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
+            printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
+
+            # Only --pretty=oneline omits "commit [SHA1]" lines.
+            sed '/^commit /d'
+
+            # Can't set 'status' directly, so influence it indirectly using
+            # exit status (https://mywiki.wooledge.org/BashFAQ/024).
+            false
+        fi
+    } || status=1
+done
+exit $status

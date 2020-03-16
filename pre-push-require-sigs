@@ -1,0 +1,68 @@
+#!/usr/bin/env sh
+
+# Pre-push hook that blocks commits lacking a good PGP signature.
+#
+# Exits with a zero status if every outbound commit has a good PGP signature
+# (including ones that have unknown validity, are expired, or were made by
+# expired or revoked certificates); exits with a nonzero status otherwise.
+#
+# See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+
+# Ideally this would just be an awk script starting with
+#   #!/usr/bin/env awk -f
+# but shebangs with multiple arguments don't work on some systems
+# (https://www.in-ulm.de/~mascheck/various/shebang/#splitting).
+
+
+# Use a heredoc instead of single quotes so I don't have to avoid single
+# quotes in the script itself.
+script=$(cat <<\EOF
+    BEGIN {
+        orig_RS = RS
+        exit_status = 0
+    }
+
+    # Fields are 1) local ref, 2) local SHA1, 3) remote ref, 4) remote SHA1.
+    # Ignore pushes that delete remote refs, since no commits are sent.
+    $2 != "0000000000000000000000000000000000000000" {
+        if ($4 == "0000000000000000000000000000000000000000")
+            range = $2              # Creating new remote ref.
+        else
+            range = $4 ".." $2      # Updating existing remote ref.
+
+        # Treat "commit [SHA1]\n[signature status]" as a single record by
+        # outputting extra newlines and setting RS to a null string.
+        git_rev_list_cmd = "git rev-list --pretty=%G?%n " range
+        RS = ""
+        while (git_rev_list_cmd | getline commit_record) {
+            split(commit_record, commit_fields)
+            sha1 = commit_fields[2]
+            sig_status = commit_fields[3]
+
+            if (sig_status ~ /^[GUXYR]$/)
+                continue
+
+            if (exit_status == 0) {
+                printf "%s: blocked push to %s\n", hook_name, $3
+                printf "%s: commits in %s without good signatures:\n",
+                       hook_name, $1
+                exit_status = 1
+            }
+
+            printf "  %s - %s\n", sha1, \
+                   (sig_status == "B") ? "bad signature" : \
+                   (sig_status == "E") ? "signature cannot be checked" : \
+                   (sig_status == "N") ? "no signature" : \
+                                         "unknown signature status"
+        }
+        close(git_rev_list_cmd)
+
+        # Restore original RS for reading standard input.
+        RS = orig_RS
+    }
+
+    END { exit exit_status }
+EOF
+)
+
+exec >&2 awk "$script" hook_name="$(basename -- "$0")"

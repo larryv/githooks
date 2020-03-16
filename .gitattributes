@@ -1,7 +1,2 @@
 # Normalize EOLs for text-ish files.
 * text=auto
-
-# Since driver hooks are meant to be copied out of the repository,
-# insert their blob SHA-1 to help date them later if desired. It's not
-# ideal, but the driver hooks shouldn't change very often anyway.
-pre-push ident
