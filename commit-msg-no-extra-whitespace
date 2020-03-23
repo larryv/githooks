@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+
+# Commit-msg hook that blocks messages containing extra whitespace.
+#
+# Exits with a nonzero status if the proposed commit message has whitespace at
+# the beginning of the subject or at the end of any line; exits with a zero
+# status otherwise.
+#
+# See also: https://git-scm.com/docs/githooks/2.24.0#_commit_msg
+
+
+exec >&2
+
+# Git prepends its exec directory to PATH, so this just works.
+. git-sh-setup
+
+fail=
+
+IFS= read -r subject <"$1"
+case $subject in
+    [[:space:]]*)
+        say "${0##*/}: subject contained leading whitespace"
+        fail=yes
+        ;;
+esac
+
+# Ignore comments and commit.verbose diffs.
+if sed '/^# -\{24\} >8 -\{24\}$/q; /^#/d' "$1" | grep -q '[[:space:]]$'; then
+    say "${0##*/}: message contained trailing whitespace"
+    fail=yes
+fi
+
+if [ -n "$fail" ]; then
+    die "${0##*/}: rejected message is in $GIT_DIR/COMMIT_EDITMSG"
+fi
