@@ -4,10 +4,10 @@
 #
 # Exits with a nonzero status if any outbound commits are WIPs and zero
 # otherwise. A commit is considered a WIP if its commit message begins with
-# "FIXUP", "NOCOMMIT", "REWORD", "SQUASH", or "WIP" (matched
-# case-sensitively). These can be enclosed in braces ("{WIP}"), brackets
-# ("[WIP]"), or parentheses ("(WIP)"). They can also be bare ("WIP") if they
-# are not immediately followed by a letter.
+# "FIXUP", "NOCOMMIT", "REWORD", "SQUASH", or "WIP" (ignoring case). These can
+# be enclosed in braces ("{WIP}"), brackets ("[WIP]"), or parentheses
+# ("(WIP)"). They can also be bare ("WIP") if they are not immediately
+# followed by a letter.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
@@ -36,7 +36,7 @@ do
     # TODO Print with the right colors at the right time.
     git rev-list --extended-regexp --grep="^($keywords)([^[:alpha:]]|$)" \
         --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
-        --pretty='%h %s' "$range" \
+        --pretty='%h %s' --regexp-ignore-case "$range" \
     | {
         # Discard the first "commit [full SHA1]" line.
         if read -r; then
