@@ -32,5 +32,5 @@ if sed '/^# -\{24\} >8 -\{24\}$/q; /^#/d' "$1" | grep -q '[[:space:]]$'; then
 fi
 
 if [ -n "$fail" ]; then
-    die "${0##*/}: rejected message is in $GIT_DIR/COMMIT_EDITMSG"
+    die "${0##*/}: rejected message is in $1"
 fi
