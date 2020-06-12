@@ -27,12 +27,12 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
         range=$remote_sha1..$local_sha1
     fi
 
-    git rev-list --pretty='%H %G?' "$range" | {
+    git rev-list --pretty='%h %G? %s' "$range" | {
         range_blocked=no
 
         # Every other line is "commit [full SHA1]", which we don't want. (Only
         # the "oneline" pretty-format omits them.)
-        while read -r && read -r hash sig_status; do
+        while read -r && read -r hash sig_status subject; do
             # See the git-rev-list(1) man page for possible outputs of '%G?'.
             case $sig_status in
                 [GUXYR]) continue ;;
@@ -43,13 +43,18 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
             esac
 
             if [ "$range_blocked" = no ]; then
+                # Print a blank line between ranges.
+                if [ "$exit_status" -ne 0 ]; then
+                    echo
+                fi
                 printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
                 printf '%s: commits in %s without good signatures:\n' \
                     "${0##*/}" "$local_ref"
                 range_blocked=yes
             fi
 
-            printf '  %s - %s\n' "$hash" "$sig_status_msg"
+            # TODO Print with the right colors at the right time.
+            printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
         done
 
         # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing command

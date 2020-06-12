@@ -19,13 +19,6 @@ exec >&2
 
 readonly keywords='FIXUP|NOCOMMIT|REWORD|SQUASH|WIP'
 
-# Used in the `git rev-list` format to avoid wrapping. Not really important,
-# so if tput(1) fails (https://mywiki.wooledge.org/BashFAQ/091), just assume
-# there are 80 columns and move on. The format begins with 40 hex digits,
-# 4 spaces, and 1 hyphen-minus, so subtract 45.
-[ -n "$COLUMNS" ] || COLUMNS=$(tput cols) || COLUMNS=80
-readonly max_subject_width=$((COLUMNS - 45))
-
 status=0
 while read -r local_ref local_sha1 remote_ref remote_sha1
 do
@@ -40,12 +33,17 @@ do
         range=$remote_sha1..$local_sha1
     fi
 
+    # TODO Print with the right colors at the right time.
     git rev-list --extended-regexp --grep="^($keywords)([^[:alpha:]]|$)" \
         --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
-        --pretty="  %H - %<($max_subject_width,trunc)%s" "$range" \
+        --pretty='%h %s' "$range" \
     | {
         # Discard the first "commit [full SHA1]" line.
         if read -r; then
+            # Print a blank line between ranges.
+            if [ "$status" -ne 0 ]; then
+                echo
+            fi
             printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
             printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 
