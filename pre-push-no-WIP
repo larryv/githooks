@@ -45,8 +45,7 @@ do
         --pretty="  %H - %<($max_subject_width,trunc)%s" "$range" \
     | {
         # Discard the first "commit [full SHA1]" line.
-        # shellcheck disable=SC2162
-        if read; then
+        if read -r; then
             printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
             printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 
