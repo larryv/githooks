@@ -44,17 +44,19 @@ do
         --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
         --pretty="  %H - %<($max_subject_width,trunc)%s" "$range" \
     | {
-        # The first line is a "commit [SHA1]" line, so it's safe to discard.
+        # Discard the first "commit [full SHA1]" line.
         # shellcheck disable=SC2162
         if read; then
             printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
             printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 
-            # Only --pretty=oneline omits "commit [SHA1]" lines.
+            # Only the "oneline" pretty-format omits "commit [full SHA1]"
+            # lines, so we have to discard them ourselves.
             sed '/^commit /d'
 
-            # Can't set 'status' directly, so influence it indirectly using
-            # exit status (https://mywiki.wooledge.org/BashFAQ/024).
+            # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing `if` may
+            # run in a subshell, so use the exit status of the pipeline to set
+            # 'status' on the outside.
             false
         fi
     } || status=1

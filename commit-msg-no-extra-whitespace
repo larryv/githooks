@@ -11,7 +11,8 @@
 
 exec >&2
 
-# Git prepends its exec directory to PATH, so this just works.
+# Git prepends its exec directory to PATH, so this just works. It provides the
+# `say` and `die` functions.
 . git-sh-setup
 
 fail=
