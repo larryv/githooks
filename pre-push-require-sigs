@@ -63,4 +63,4 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
         [ "$range_blocked" = no ]
     } || exit_status=1
 done
-exit $exit_status
+exit "$exit_status"

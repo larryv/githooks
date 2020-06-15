@@ -58,4 +58,4 @@ do
         fi
     } || status=1
 done
-exit $status
+exit "$status"
