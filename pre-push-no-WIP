@@ -37,25 +37,21 @@ do
     git rev-list --extended-regexp --grep="^($keywords)([^[:alpha:]]|$)" \
         --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
         --pretty='%h %s' --regexp-ignore-case "$range" \
-    | {
-        # Discard the first "commit [full SHA1]" line.
-        if read -r; then
-            # Print a blank line between ranges.
-            if [ "$status" -ne 0 ]; then
-                echo
-            fi
-            printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
-            printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
+    | (
+        # There's nothing to do if there's no input. If there is input,
+        # discard the first line, which is a "commit [full SHA1]" line.
+        read -r || exit
 
-            # Only the "oneline" pretty-format omits "commit [full SHA1]"
-            # lines, so we have to discard them ourselves.
-            sed '/^commit /d'
-
-            # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing `if` may
-            # run in a subshell, so use the exit status of the pipeline to set
-            # 'status' on the outside.
-            false
+        # Print a blank line between ranges.
+        if [ "$status" -ne 0 ]; then
+            echo
         fi
-    } || status=1
+        printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
+        printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
+
+        # Only the "oneline" pretty-format omits "commit [full SHA1]" lines,
+        # so we have to discard them ourselves. Let everything else through.
+        sed '/^commit /d'
+    ) && status=1
 done
 exit "$status"
