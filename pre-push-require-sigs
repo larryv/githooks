@@ -60,7 +60,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
         # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing command
         # grouping may run in a subshell, so use the exit status of the
         # pipeline to set 'exit_status' on the outside.
-        [ "$range_blocked" = no ]
-    } || exit_status=1
+        [ "$range_blocked" = yes ]
+    } && exit_status=1
 done
 exit "$exit_status"
