@@ -15,22 +15,22 @@ exec >&2
 # `say` and `die_with_status` functions.
 . git-sh-setup
 
-status=0
+exit_status=0
 
 IFS= read -r subject <"$1"
 case $subject in
     [[:space:]]*)
         say "${0##*/}: subject contained leading whitespace"
-        status=1
+        exit_status=1
         ;;
 esac
 
 # Ignore comments and commit.verbose diffs.
 if sed '/^# -\{24\} >8 -\{24\}$/q; /^#/d' "$1" | grep -q '[[:space:]]$'; then
     say "${0##*/}: message contained trailing whitespace"
-    status=1
+    exit_status=1
 fi
 
-if [ "$status" -ne 0 ]; then
-    die_with_status "$status" "${0##*/}: rejected message is in $1"
+if [ "$exit_status" -ne 0 ]; then
+    die_with_status "$exit_status" "${0##*/}: rejected message is in $1"
 fi
