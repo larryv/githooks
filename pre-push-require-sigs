@@ -3,8 +3,8 @@
 # Pre-push hook that blocks commits lacking a good PGP signature.
 #
 # Exits with a zero status if every outbound commit has a good PGP signature
-# (including ones that have unknown validity, are expired, or were made by
-# expired or revoked certificates); exits with a nonzero status otherwise.
+# (including good signatures that have unknown validity, are expired, or were
+# made by expired or revoked certificates) and nonzero otherwise.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
