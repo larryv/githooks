@@ -21,26 +21,36 @@ hooks_dir=${hooks_dir%??}
 # Git executes hooks "normally", so $0 should contain the pathname.
 hooks_prefix=${0##*/}
 
+# If receiving data on standard input, save it to be repeatedly fed to the
+# invoked hooks later. Using a temporary file is more complicated and possibly
+# slower than using a variable and here-document, but it ensures predictable
+# memory usage.
 case $hooks_prefix in
     post-receive | post-rewrite | pre-push | pre-receive)
-        # At least one line is coming on standard input, so send them through.
-        cat
+        # https://mywiki.wooledge.org/BashFAQ/062
+        # https://mywiki.wooledge.org/SignalTrap
+        hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
+        tmpfile=~/.${hooks_prefix}${hostname:+_$hostname}_$$.tmp
+        rm -f -- "$tmpfile" || exit
+        trap 'rm -f -- "$tmpfile"' EXIT
+        for sig in HUP INT QUIT TERM; do
+            # Let the shell produce its "killed by signal" exit status.
+            trap 'rm -f -- "$tmpfile"; trap - '$sig'; kill -s '$sig' $$' $sig
+        done
+        cat >"$tmpfile" || exit
         ;;
     *)
-        # Nothing's coming on standard input, so avoid blocking on it, but
-        # coax one iteration out of the `while` loop.
-        echo
+        tmpfile=
         ;;
-esac | while IFS= read -r line; do
-    for hook in "$hooks_dir/$hooks_prefix"-*; do
-        # Ignore nonexecutable hooks because Git does. Technically there's
-        # a TOCTOU bug here, but I don't think it's worth worrying about.
-        if [ -f "$hook" ] && [ -x "$hook" ]; then
-            # https://mywiki.wooledge.org/BashFAQ/024 - If the enclosing
-            # `while` loop runs in a subshell, then `exit` terminates that
-            # subshell only, not the entire program. This only matters if code
-            # is ever added after the `while` loop.
-            printf %s\\n "$line" | "$hook" "$@" || exit
-        fi
-    done
+esac
+
+for hook in "$hooks_dir/$hooks_prefix"-*; do
+    # Ignore nonexecutable hooks because Git does. Technically there's
+    # a TOCTOU bug here, but I don't think it's worth worrying about.
+    [ -f "$hook" ] && [ -x "$hook" ] || continue
+    if [ -n "$tmpfile" ]; then
+        "$hook" "$@" <"$tmpfile"
+    else
+        "$hook" "$@"
+    fi || exit
 done
