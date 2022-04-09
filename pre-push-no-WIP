@@ -17,12 +17,12 @@
 # <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 
-# Exits with a nonzero status if any outbound commits are WIPs and zero
-# otherwise.  A commit is considered a WIP if its commit message begins
-# with "FIXUP", "NOCOMMIT", "REWORD", "SQUASH", or "WIP".  These can be
-# enclosed in braces ("{WIP}"), brackets ("[WIP]"), or parentheses
-# ("(WIP)"); they can also be bare ("WIP") if they are not immediately
-# followed by a letter.  Case is ignored.
+# Exits with a nonzero status if any outbound commits are WIPs ("works
+# in progress") and zero otherwise.  A commit is considered a WIP if its
+# message begins with a recognized keyword -- "FIXUP", "NOCOMMIT",
+# "REWORD", "SQUASH", or "WIP" -- enclosed in braces ("{WIP}"), brackets
+# ("[WIP]"), or parentheses ("(WIP)"); it can also be bare ("WIP") if it
+# is not immediately followed by a letter.  Case is ignored.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
@@ -49,7 +49,7 @@ do
         range=$remote_sha1..$local_sha1
     fi
 
-    # TODO Print with the right colors at the right time.
+    # TODO: Print with the right colors at the right time.
     git rev-list --extended-regexp --grep="^($keywords)([^[:alpha:]]|$)" \
         --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
         --pretty='%h %s' --regexp-ignore-case "$range" \
