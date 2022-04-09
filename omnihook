@@ -31,7 +31,7 @@
 
 # https://www.etalabs.net/sh_tricks.html, § "Getting non-clobbered
 # output from command substitution"
-hooks_dir=$(git rev-parse --git-path hooks && echo x) || exit
+hooks_dir=$(git rev-parse --git-path hooks && echo .) || exit
 hooks_dir=${hooks_dir%??}
 
 # Git executes hooks "normally", so $0 should contain the pathname.
