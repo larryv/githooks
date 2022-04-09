@@ -29,6 +29,11 @@
 # Git prepends its exec directory to PATH, so this just works.
 . git-sh-setup
 
+# Helper function for cleanup traps.
+cleanup() {
+    rm -f -- "$tmpfile"
+}
+
 # https://www.etalabs.net/sh_tricks.html, § "Getting non-clobbered
 # output from command substitution"
 hooks_dir=$(git rev-parse --git-path hooks && echo .) || exit
@@ -47,13 +52,13 @@ case $hooks_prefix in
         # https://mywiki.wooledge.org/SignalTrap
 
         hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
-        tmpfile=~/.${hooks_prefix}${hostname:+_$hostname}_$$.tmp
-        rm -f -- "$tmpfile" || exit
+        tmpfile=~/.githooks_${hooks_prefix}${hostname:+_$hostname}_$$.tmp
+        cleanup || exit
 
-        trap 'rm -f -- "$tmpfile"' EXIT
+        trap cleanup EXIT
         for sig in HUP INT QUIT TERM; do
             # Let the shell produce its "killed by signal" exit status.
-            trap 'rm -f -- "$tmpfile"; trap - '$sig'; kill -s '$sig' $$' $sig
+            trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig"
         done
 
         cat >"$tmpfile" || exit
