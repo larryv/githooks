@@ -45,14 +45,17 @@ case $hooks_prefix in
     post-receive | post-rewrite | pre-push | pre-receive)
         # https://mywiki.wooledge.org/BashFAQ/062
         # https://mywiki.wooledge.org/SignalTrap
+
         hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
         tmpfile=~/.${hooks_prefix}${hostname:+_$hostname}_$$.tmp
         rm -f -- "$tmpfile" || exit
+
         trap 'rm -f -- "$tmpfile"' EXIT
         for sig in HUP INT QUIT TERM; do
             # Let the shell produce its "killed by signal" exit status.
             trap 'rm -f -- "$tmpfile"; trap - '$sig'; kill -s '$sig' $$' $sig
         done
+
         cat >"$tmpfile" || exit
         ;;
     *)
@@ -64,6 +67,7 @@ for hook in "$hooks_dir/$hooks_prefix"-*; do
     # Ignore nonexecutable hooks because Git does.  Technically there's
     # a TOCTOU bug here, but I don't think it's worth worrying about.
     [ -f "$hook" ] && [ -x "$hook" ] || continue
+
     if [ -n "$tmpfile" ]; then
         "$hook" "$@" <"$tmpfile"
     else
