@@ -18,11 +18,11 @@
 
 
 # Exits with a nonzero status if any outbound commits are WIPs and zero
-# otherwise. A commit is considered a WIP if its commit message begins with
-# "FIXUP", "NOCOMMIT", "REWORD", "SQUASH", or "WIP". These can be enclosed in
-# braces ("{WIP}"), brackets ("[WIP]"), or parentheses ("(WIP)"); they can
-# also be bare ("WIP") if they are not immediately followed by a letter. Case
-# is ignored.
+# otherwise.  A commit is considered a WIP if its commit message begins
+# with "FIXUP", "NOCOMMIT", "REWORD", "SQUASH", or "WIP".  These can be
+# enclosed in braces ("{WIP}"), brackets ("[WIP]"), or parentheses
+# ("(WIP)"); they can also be bare ("WIP") if they are not immediately
+# followed by a letter.  Case is ignored.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
@@ -53,8 +53,8 @@ do
         --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
         --pretty='%h %s' --regexp-ignore-case "$range" \
     | (
-        # There's nothing to do if there's no input. If there is input,
-        # discard the first line, which is a "commit [full SHA1]" line.
+        # There's nothing to do if there's no input.  If there is input,
+        # discard the first line, which is a "commit [full SHA1]" line.
         read -r || exit
 
         # Print a blank line between ranges.
@@ -64,8 +64,9 @@ do
         printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
         printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 
-        # Only the "oneline" pretty-format omits "commit [full SHA1]" lines,
-        # so we have to discard them ourselves. Let everything else through.
+        # Only the "oneline" pretty-format omits "commit [full SHA1]"
+        # lines, so we have to discard them ourselves.  Let everything
+        # else through.
         sed '/^commit /d'
     ) && exit_status=1
 done

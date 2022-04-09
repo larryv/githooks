@@ -17,10 +17,11 @@
 # <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 
-# When installed to a repository's hooks directory as FOO and invoked by Git,
-# runs every executable file named FOO-* in that directory, passing along all
-# relevant information. Exits with a nonzero status if any invoked executable
-# does so (or if Git is extremely broken) and zero otherwise.
+# When installed to a repository's hooks directory as FOO and invoked by
+# Git, runs every executable file named FOO-* in that directory, passing
+# along all relevant information.  Exits with a nonzero status if any
+# invoked executable does so (or if Git is extremely broken) and zero
+# otherwise.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0
 
@@ -28,18 +29,18 @@
 # Git prepends its exec directory to PATH, so this just works.
 . git-sh-setup
 
-# https://www.etalabs.net/sh_tricks.html, § "Getting non-clobbered output from
-# command substitution"
+# https://www.etalabs.net/sh_tricks.html, § "Getting non-clobbered
+# output from command substitution"
 hooks_dir=$(git rev-parse --git-path hooks && echo x) || exit
 hooks_dir=${hooks_dir%??}
 
 # Git executes hooks "normally", so $0 should contain the pathname.
 hooks_prefix=${0##*/}
 
-# If receiving data on standard input, save it to be repeatedly fed to the
-# invoked hooks later. Using a temporary file is more complicated and possibly
-# slower than using a variable and here-document, but it ensures predictable
-# memory usage.
+# If receiving data on standard input, save it to be repeatedly fed to
+# the invoked hooks later.  Using a temporary file is more complicated
+# and possibly slower than using a variable and here-document, but it
+# ensures predictable memory usage.
 case $hooks_prefix in
     post-receive | post-rewrite | pre-push | pre-receive)
         # https://mywiki.wooledge.org/BashFAQ/062
@@ -60,7 +61,7 @@ case $hooks_prefix in
 esac
 
 for hook in "$hooks_dir/$hooks_prefix"-*; do
-    # Ignore nonexecutable hooks because Git does. Technically there's
+    # Ignore nonexecutable hooks because Git does.  Technically there's
     # a TOCTOU bug here, but I don't think it's worth worrying about.
     [ -f "$hook" ] && [ -x "$hook" ] || continue
     if [ -n "$tmpfile" ]; then

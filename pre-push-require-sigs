@@ -17,9 +17,10 @@
 # <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 
-# Exits with a zero status if every outbound commit has a good PGP signature
-# (including good signatures that have unknown validity, are expired, or were
-# made by expired or revoked certificates) and nonzero otherwise.
+# Exits with a zero status if every outbound commit has a good PGP
+# signature (including good signatures that have unknown validity, are
+# expired, or were made by expired or revoked certificates) and nonzero
+# otherwise.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
@@ -45,8 +46,8 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
     git rev-list --pretty='%h %G? %s' "$range" | {
         range_blocked=no
 
-        # Every other line is "commit [full SHA1]", which we don't want. (Only
-        # the "oneline" pretty-format omits them.)
+        # Every other line is "commit [full SHA1]", which we don't want.
+        # (Only the "oneline" pretty-format omits them.)
         while read -r && read -r hash sig_status subject; do
             # See the git-rev-list(1) man page for possible outputs of '%G?'.
             case $sig_status in
@@ -72,9 +73,9 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
             printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
         done
 
-        # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing command
-        # grouping may run in a subshell, so use the exit status of the
-        # pipeline to set 'exit_status' on the outside.
+        # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing
+        # command grouping may run in a subshell, so use the exit status
+        # of the pipeline to set 'exit_status' on the outside.
         [ "$range_blocked" = yes ]
     } && exit_status=1
 done
