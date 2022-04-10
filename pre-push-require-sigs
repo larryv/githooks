@@ -63,6 +63,8 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
             esac
 
             if [ "$range_blocked" = no ]; then
+                range_blocked=yes
+
                 # Print a blank line between ranges.
                 if [ "$exit_status" -ne 0 ]; then
                     echo
@@ -71,7 +73,6 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
                 printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
                 printf '%s: commits in %s without good signatures:\n' \
                     "${0##*/}" "$local_ref"
-                range_blocked=yes
             fi
 
             # TODO: Print with the right colors at the right time.
