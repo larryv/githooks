@@ -1,7 +1,22 @@
 #!/usr/bin/env sh
 
-# Polymorphic driver hook.
+# omnihook - Polymorphic driver hook
+# ----------------------------------
 #
+# SPDX-License-Identifier: CC0-1.0
+#
+# Written in 2018, 2020 by Lawrence Velazquez <vq@larryv.me>.
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to the
+# public domain worldwide.  This software is distributed without any
+# warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software.  If not, see
+# <https://creativecommons.org/publicdomain/zero/1.0/>.
+
+
 # When installed to a repository's hooks directory as FOO and invoked by Git,
 # runs every executable file named FOO-* in that directory, passing along all
 # relevant information. Exits with a nonzero status if any invoked executable

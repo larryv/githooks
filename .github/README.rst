@@ -1,3 +1,20 @@
+.. .github/README.rst
+   ------------------
+
+   SPDX-License-Identifier: CC0-1.0
+
+   Written in 2020, 2022 by Lawrence Velazquez <vq@larryv.me>.
+
+   To the extent possible under law, the author(s) have dedicated all
+   copyright and related and neighboring rights to this software to the
+   public domain worldwide.  This software is distributed without any
+   warranty.
+
+   You should have received a copy of the CC0 Public Domain Dedication
+   along with this software.  If not, see
+   <https://creativecommons.org/publicdomain/zero/1.0/>.
+
+
 githooks
 ========
 
@@ -36,7 +53,17 @@ pre-push_-require-sigs
 
 Maybe there will be more one day! Reach for the stars.
 
+----
+
+To the extent possible under law, the author(s) have `dedicated all
+copyright and related and neighboring rights to this software to the
+public domain worldwide`_.  This software is published from the United
+States of America and distributed without any warranty.
+
+
 .. _Git hooks: https://git-scm.com/docs/githooks/2.24.0
 .. _arq-helpers: https://github.com/larryv/arq-helpers
 .. _supported Git hook: https://git-scm.com/docs/githooks/2.24.0#_hooks
 .. _pre-push: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+.. _dedicated all copyright and related and neighboring rights to this software to the public domain worldwide:
+   https://creativecommons.org/publicdomain/zero/1.0/

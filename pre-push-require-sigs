@@ -1,7 +1,22 @@
 #!/usr/bin/env sh
 
-# Pre-push hook that blocks commits lacking a good PGP signature.
+# pre-push-require-sigs - Block commits without a good PGP signature
+# ------------------------------------------------------------------
 #
+# SPDX-License-Identifier: CC0-1.0
+#
+# Written in 2018, 2020 by Lawrence Velazquez <vq@larryv.me>.
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to the
+# public domain worldwide.  This software is distributed without any
+# warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software.  If not, see
+# <https://creativecommons.org/publicdomain/zero/1.0/>.
+
+
 # Exits with a zero status if every outbound commit has a good PGP signature
 # (including good signatures that have unknown validity, are expired, or were
 # made by expired or revoked certificates) and nonzero otherwise.

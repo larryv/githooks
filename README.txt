@@ -36,8 +36,20 @@ pre-push-require-sigs [4]
 
 Maybe there will be more one day! Reach for the stars.
 
-    [1]: https://git-scm.com/docs/githooks/2.24.0
-    [2]: https://github.com/larryv/arq-helpers
-    [3]: https://git-scm.com/docs/githooks/2.24.0#_hooks
-    [4]: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+----
 
+To the extent possible under law, the author(s) have dedicated all
+copyright and related and neighboring rights to this software to the
+public domain worldwide.  This software is published from the United
+States of America and distributed without any warranty.
+
+You should have received a copy of the CC0 Public Domain Dedication
+along with this software.  If not, see
+<https://creativecommons.org/publicdomain/zero/1.0/>.
+
+----
+
+  [1]: https://git-scm.com/docs/githooks/2.24.0
+  [2]: https://github.com/larryv/arq-helpers
+  [3]: https://git-scm.com/docs/githooks/2.24.0#_hooks
+  [4]: https://git-scm.com/docs/githooks/2.24.0#_pre_push

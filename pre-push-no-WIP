@@ -1,7 +1,22 @@
 #!/usr/bin/env sh
 
-# Pre-push hook that blocks WIP ("work in progress") commits.
+# pre-push-no-WIP - Block "work in progress" commits
+# --------------------------------------------------
 #
+# SPDX-License-Identifier: CC0-1.0
+#
+# Written in 2018, 2020 by Lawrence Velazquez <vq@larryv.me>.
+#
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to the
+# public domain worldwide.  This software is distributed without any
+# warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software.  If not, see
+# <https://creativecommons.org/publicdomain/zero/1.0/>.
+
+
 # Exits with a nonzero status if any outbound commits are WIPs and zero
 # otherwise. A commit is considered a WIP if its commit message begins with
 # "FIXUP", "NOCOMMIT", "REWORD", "SQUASH", or "WIP". These can be enclosed in
