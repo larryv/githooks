@@ -21,8 +21,7 @@
 # in progress") and zero otherwise.  A commit is considered a WIP if its
 # message begins with a recognized keyword -- "FIXUP", "NOCOMMIT",
 # "REWORD", "SQUASH", or "WIP" -- enclosed in braces ("{WIP}"), brackets
-# ("[WIP]"), or parentheses ("(WIP)"); it can also be bare ("WIP") if it
-# is not immediately followed by a letter.  Case is ignored.
+# ("[WIP]"), or parentheses ("(WIP)").  Case is ignored.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
@@ -49,9 +48,9 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
     fi
 
     # TODO: Print with the right colors at the right time.
-    git rev-list --extended-regexp --grep="^($keywords)([^[:alpha:]]|$)" \
+    git rev-list --pretty='%h %s' --extended-regexp --regexp-ignore-case \
         --grep="^\(($keywords))|^\{($keywords)}|^\[($keywords)]" \
-        --pretty='%h %s' --regexp-ignore-case "$range" \
+        "$range" \
     | (
         # There's nothing to do if there's no input.  If there is input,
         # discard the first line, which is a "commit [full SHA1]" line.
