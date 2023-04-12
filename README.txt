@@ -98,12 +98,8 @@ Legal
 
 To the extent possible under law, the author has dedicated all copyright
 and related and neighboring rights to this software to the public domain
-worldwide.  This software is published from the United States of America
-and distributed without any warranty.
-
-You should have received a copy of the CC0 Public Domain Dedication
-along with this software.  If not, see
-<https://creativecommons.org/publicdomain/zero/1.0/>.
+worldwide [11].  This software is published from the United States of
+America and distributed without any warranty.
 
 
 Notes
@@ -128,6 +124,7 @@ References
  8. https://www.gnu.org/software/make/manual/html_node/Directory-Variables.html
  9. https://www.gnu.org/software/automake/manual/automake.html#index-PACKAGE_002c-directory
 10. https://www.gnu.org/software/make/manual/html_node/Command-Variables.html
+11. https://creativecommons.org/publicdomain/zero/1.0/
 12. https://www.in-ulm.de/~mascheck/bourne/
 
 
