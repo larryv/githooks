@@ -26,7 +26,9 @@ Requirements
 
   - A shell that conforms to POSIX [3] or comes close enough [A]
 
-  - The usual Unix tools
+  - The usual Unix tools, including:
+
+      - make(1) (build)
 
   - One or more tools for verifying signatures (pre-push-require-sigs):
 
@@ -35,6 +37,23 @@ Requirements
       - gpgsm(1) or a drop-in replacement [6], for X.509 signatures
 
       - ssh-keygen(1) or a drop-in replacement [6], for SSH signatures
+
+
+Installation, etc.
+------------------
+
+These commands must be run from the directory containing the makefile
+(using `make -C` is fine) [B]:
+
+  - To install: `sudo make install`
+  - To uninstall: `sudo make uninstall`
+
+To use an install location other than /usr/local/libexec/githooks,
+override DESTDIR [7], exec_prefix [8], libexecdir [8], PACKAGE [9], or
+prefix [8].  To modify build commands, override INSTALL [10] or
+INSTALL_PROGRAM [10].
+
+    sudo make prefix=/opt DESTDIR=/tmp/staging INSTALL=ginstall install
 
 
 Usage
@@ -49,7 +68,7 @@ a "FOO-" hook to a repository's hooks directory (`git rev-parse
   - Copy or link it as FOO.  For example, to use pre-push-require-sigs
     as pre-push:
 
-        ln -s /this/project/pre-push-require-sigs \
+        ln -s /usr/local/libexec/githooks/pre-push-require-sigs \
               /example/repo/.git/hooks/pre-push
 
     This necessarily precludes the use of other "FOO-" hooks.
@@ -58,10 +77,10 @@ a "FOO-" hook to a repository's hooks directory (`git rev-parse
     as FOO.  For example, to use both pre-push-no-WIP and
     pre-push-require-sigs:
 
-        ln -s /this/project/omnihook \
+        ln -s /usr/local/libexec/githooks/omnihook \
               /example/repo/.git/hooks/pre-push &&
-        ln -s /this/project/pre-push-no-WIP \
-              /this/project/pre-push-require-sigs \
+        ln -s /usr/local/libexec/githooks/pre-push-no-WIP \
+              /usr/local/libexec/githooks/pre-push-require-sigs \
               /example/repo/.git/hooks
 
     As FOO, omnihook runs every "FOO-" executable in the hooks
@@ -89,6 +108,9 @@ Notes
  A. Shells known to work at one point or another include bash 3.2.57.
     Traditional Bourne shells [12] are not supported.
 
+ B. Feel free to replace sudo(8) with doas(1), su(1), or some other
+    tool, or to omit it entirely if elevated privileges are not desired.
+
 
 References
 ----------
@@ -98,6 +120,10 @@ References
  3. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
  5. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgprogram
  6. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgltformatgtprogram
+ 7. https://www.gnu.org/software/make/manual/html_node/DESTDIR.html
+ 8. https://www.gnu.org/software/make/manual/html_node/Directory-Variables.html
+ 9. https://www.gnu.org/software/automake/manual/automake.html#index-PACKAGE_002c-directory
+10. https://www.gnu.org/software/make/manual/html_node/Command-Variables.html
 12. https://www.in-ulm.de/~mascheck/bourne/
 
 
