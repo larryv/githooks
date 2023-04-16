@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 #
-# Written in 2018, 2020 by Lawrence Velazquez <vq@larryv.me>.
+# Written in 2018, 2020, 2023 by Lawrence Velazquez <vq@larryv.me>.
 #
 # To the extent possible under law, the author has dedicated all
 # copyright and related and neighboring rights to this software to the
@@ -15,5 +15,5 @@
 # <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 
-# Normalize EOLs for text-ish files.
+# Normalize line endings in text files.
 * text=auto
