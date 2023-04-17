@@ -22,7 +22,7 @@ dnl
 dnl
 dnl
 divert[]dnl
-#!/bin/sh -
+[#]!ifdef([SHELL], [defn([SHELL])], [[/bin/sh]]) -
 
 # omnihook - Polymorphic driver hook
 # ----------------------------------

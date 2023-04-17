@@ -25,6 +25,7 @@
 
 # Remember to update the READMEs after adding new macros here.
 
+# Hard-coded into the shebangs of shell scripts.
 SHELL = /bin/sh
 
 INSTALL = ./install-sh
@@ -43,7 +44,7 @@ prefix = /usr/local
 # "PRIVATE" MACROS
 
 do_cleanup = { rc=$$?; rm -f -- $@ && exit "$$rc"; }
-do_m4 = $(M4) $(M4FLAGS)
+do_m4 = $(M4) $(M4FLAGS) -D SHELL=$(SHELL)
 pkglibexec_SCRIPTS = omnihook pre-push-no-WIP pre-push-require-sigs
 pkglibexecdir = $(libexecdir)/$(PACKAGE)
 

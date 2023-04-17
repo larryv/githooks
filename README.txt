@@ -58,9 +58,11 @@ These commands must be run from the directory containing the makefile
 To use an install location other than /usr/local/libexec/githooks,
 override DESTDIR [7], exec_prefix [8], libexecdir [8], PACKAGE [9], or
 prefix [8].  To modify build commands, override INSTALL [10],
-INSTALL_PROGRAM [10], M4, M4FLAGS, SHELLCHECK, or SHELLCHECKFLAGS.
+INSTALL_PROGRAM [10], M4, M4FLAGS, SHELLCHECK, or SHELLCHECKFLAGS.  To
+use something other than /bin/sh as the interpreter for installed shell
+scripts, override SHELL [C].
 
-    make M4=gm4 M4FLAGS=-G &&
+    make M4=gm4 M4FLAGS=-G SHELL=/usr/local/bin/dash &&
     make SHELLCHECKFLAGS='--norc --severity=warning' check &&
     sudo make prefix=/opt DESTDIR=/tmp/staging INSTALL=ginstall install
 
@@ -116,6 +118,10 @@ Notes
  B. Feel free to replace sudo(8) with doas(1), su(1), or some other
     tool, or to omit it entirely if elevated privileges are not desired.
 
+ C. Overriding SHELL also changes the interpreter [13] used by POSIX-
+    conformant make(1) implementations.  This shouldn't be a problem; if
+    a shell can handle the installed scripts, it can handle the build.
+
 
 References
 ----------
@@ -132,6 +138,7 @@ References
 10. https://www.gnu.org/software/make/manual/html_node/Command-Variables.html
 11. https://creativecommons.org/publicdomain/zero/1.0/
 12. https://www.in-ulm.de/~mascheck/bourne/
+13. https://www.gnu.org/software/make/manual/html_node/Choosing-the-Shell.html
 
 
 SPDX-License-Identifier: CC0-1.0

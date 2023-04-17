@@ -24,6 +24,7 @@
 .. |make| replace:: ``make(1)``
 .. |pre-push-no-WIP| replace:: ``pre-push-no-WIP``
 .. |pre-push-require-sigs| replace:: ``pre-push-require-sigs``
+.. |SHELL| replace:: ``SHELL``
 
 
 githooks
@@ -112,11 +113,13 @@ To use an install location other than ``/usr/local/libexec/githooks``,
 override |DESTDIR|__, |exec_prefix|__, |libexecdir|__, |PACKAGE|__, or
 |prefix|__.  To modify build commands, override |INSTALL|_,
 |INSTALL_PROGRAM|__, ``M4``, ``M4FLAGS``, ``SHELLCHECK``, or
-``SHELLCHECKFLAGS``.
+``SHELLCHECKFLAGS``.  To use something other than ``/bin/sh`` as the
+interpreter for installed shell scripts, override |SHELL|
+[#SHELL-macro]_.
 
 .. code:: sh
 
-   make M4=gm4 M4FLAGS=-G &&
+   make M4=gm4 M4FLAGS=-G SHELL=/usr/local/bin/dash &&
    make SHELLCHECKFLAGS='--norc --severity=warning' check &&
    sudo make prefix=/opt DESTDIR=/tmp/staging INSTALL=ginstall install
 
@@ -206,11 +209,20 @@ Notes
    other tool, or to omit it entirely if elevated privileges are not
    desired.
 
+.. [#SHELL-macro] Overriding |SHELL| also `changes the interpreter`__
+   used by |POSIX-conformant make implementations|__.  This shouldn't be
+   a problem; if a shell can handle the installed scripts, it can handle
+   the build.
+
 __ https://www.gnu.org/software/bash/
 __ https://www.in-ulm.de/~mascheck/bourne/
 __ https://www.sudo.ws
 __ https://man.openbsd.org/doas
+__ https://www.gnu.org/software/make/manual/html_node/Choosing-the-Shell.html
+__ make_
 
 .. |sudo| replace:: ``sudo(8)``
 .. |doas| replace:: ``doas(1)``
 .. |su| replace:: ``su(1)``
+.. |POSIX-conformant make implementations|
+   replace:: POSIX-conformant |make| implementations

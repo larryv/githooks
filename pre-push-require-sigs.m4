@@ -22,7 +22,7 @@ dnl
 dnl
 dnl
 divert[]dnl
-#!/bin/sh -
+[#]!ifdef([SHELL], [defn([SHELL])], [[/bin/sh]]) -
 
 # pre-push-require-sigs - Block commits without a good PGP signature
 # ------------------------------------------------------------------
