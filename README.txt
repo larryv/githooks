@@ -53,3 +53,8 @@ along with this software.  If not, see
   [2]: https://github.com/larryv/arq-helpers
   [3]: https://git-scm.com/docs/githooks/2.24.0#_hooks
   [4]: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+
+
+SPDX-License-Identifier: CC0-1.0
+
+Written in 2020, 2022 by Lawrence Velazquez <vq@larryv.me>.
