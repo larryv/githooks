@@ -89,8 +89,8 @@ esac
 for hook in "$hooks_dir/$hooks_prefix"-*; do
     # Ignore nonexecutable hooks because Git does.  Technically there's
     # a TOCTOU bug here, but I don't think it's worth worrying about.
-    if [[ -f "$hook" ] && [ -x "$hook" ]]; then
-        if [[ -n "$tmpfile" ]]; then
+    if test -f "$hook" && test -x "$hook"; then
+        if test -n "$tmpfile"; then
             "$hook" "$@" <"$tmpfile"
         else
             "$hook" "$@"

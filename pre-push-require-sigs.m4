@@ -29,7 +29,7 @@ divert[]dnl
 #
 # SPDX-License-Identifier: CC0-1.0
 #
-# Written in 2018, 2020, 2022 by Lawrence Velazquez <vq@larryv.me>.
+# Written in 2018, 2020, 2022-2023 by Lawrence Velazquez <vq@larryv.me>.
 #
 undivert(1)dnl
 
@@ -51,10 +51,10 @@ exec >&2
 exit_status=0
 
 while read -r local_ref local_sha1 remote_ref remote_sha1; do
-    if [[ "$local_sha1" = 0000000000000000000000000000000000000000 ]]; then
+    if test "$local_sha1" = 0000000000000000000000000000000000000000; then
         # Deleting a remote ref doesn't push any commits.
         continue
-    elif [[ "$remote_sha1" = 0000000000000000000000000000000000000000 ]]; then
+    elif test "$remote_sha1" = 0000000000000000000000000000000000000000; then
         # Creating new remote ref.
         range=$local_sha1
     else
@@ -80,11 +80,11 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
                 *) sig_status_msg='unknown signature status' ;;
             esac
 
-            if [[ "$range_blocked" = no ]]; then
+            if test "$range_blocked" = no; then
                 range_blocked=yes
 
                 # Print a blank line between ranges.
-                if [[ "$exit_status" -ne 0 ]]; then
+                if test "$exit_status" -ne 0; then
                     echo
                 fi
 
@@ -100,7 +100,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
         # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing
         # command grouping may run in a subshell, so use the exit status
         # of the pipeline to set 'exit_status' on the outside.
-        [[ "$range_blocked" = yes ]]
+        test "$range_blocked" = yes
     } && exit_status=1
 done
 
