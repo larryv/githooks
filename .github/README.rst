@@ -5,7 +5,7 @@
 
    Written in 2020, 2022-2023 by Lawrence Velazquez <vq@larryv.me>.
 
-   To the extent possible under law, the author(s) have dedicated all
+   To the extent possible under law, the author has dedicated all
    copyright and related and neighboring rights to this software to the
    public domain worldwide.  This software is distributed without any
    warranty.
@@ -181,7 +181,7 @@ __ https://git-scm.com/docs/githooks/2.24.0#_hooks
 Legal
 -----
 
-To the extent possible under law, `the author(s) have dedicated all
+To the extent possible under law, `the author has dedicated all
 copyright and related and neighboring rights to this software to the
 public domain worldwide`__.  This software is published from the United
 States of America and distributed without any warranty.

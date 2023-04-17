@@ -11,7 +11,7 @@ dnl Written by Lawrence Velazquez <vq@larryv.me> in:
 dnl   - 2018, 2020, 2022 (as pre-push-no-WIP)
 dnl   - 2023 (as pre-push-no-WIP.m4)
 dnl
-# To the extent possible under law, the author(s) have dedicated all
+# To the extent possible under law, the author has dedicated all
 # copyright and related and neighboring rights to this software to the
 # public domain worldwide.  This software is distributed without any
 # warranty.
