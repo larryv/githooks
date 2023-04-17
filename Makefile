@@ -17,6 +17,7 @@
 
 .POSIX:
 .SUFFIXES:
+.SUFFIXES: .m4
 
 
 # ---------------
@@ -28,6 +29,7 @@ SHELL = /bin/sh
 
 INSTALL = ./install-sh
 INSTALL_PROGRAM = $(INSTALL)
+M4 = m4
 PACKAGE = githooks
 
 exec_prefix = $(prefix)
@@ -38,27 +40,32 @@ prefix = /usr/local
 # ----------------
 # "PRIVATE" MACROS
 
-dist_pkglibexec_SCRIPTS = omnihook pre-push-no-WIP pre-push-require-sigs
+do_cleanup = { rc=$$?; rm -f -- $@ && exit "$$rc"; }
+do_m4 = $(M4) $(M4FLAGS)
+pkglibexec_SCRIPTS = omnihook pre-push-no-WIP pre-push-require-sigs
 pkglibexecdir = $(libexecdir)/$(PACKAGE)
 
 
 # --------------
 # "PUBLIC" RULES
 
-all: FORCE $(dist_pkglibexec_SCRIPTS)
+all: FORCE $(pkglibexec_SCRIPTS)
+
+clean: FORCE
+	rm -f -- $(pkglibexec_SCRIPTS)
 
 # If BAR/FOO is a directory or a symlink to one, then the behavior of
 # `install FOO BAR` varies *significantly* among implementations. Ensure
 # consistent results by detecting this situation early and bailing out.
 install: FORCE all installdirs
-	@for f in $(dist_pkglibexec_SCRIPTS); do \
+	@for f in $(pkglibexec_SCRIPTS); do \
     p=$(DESTDIR)$(pkglibexecdir)/$$f; \
     if test -d "$$p"; then \
         printf 'will not overwrite directory: %s\n' "$$p" >&2; \
         exit 1; \
     fi; \
 done
-	$(INSTALL_PROGRAM) -- $(dist_pkglibexec_SCRIPTS) $(DESTDIR)$(pkglibexecdir)
+	$(INSTALL_PROGRAM) -- $(pkglibexec_SCRIPTS) $(DESTDIR)$(pkglibexecdir)
 
 installdirs: FORCE
 	$(INSTALL) -d -- $(DESTDIR)$(pkglibexecdir)
@@ -66,7 +73,7 @@ installdirs: FORCE
 # Clear CDPATH to preclude unexpected cd(1) behavior [1].
 uninstall: FORCE
 	CDPATH= cd -- $(DESTDIR)$(pkglibexecdir) \
-    && rm -f -- $(dist_pkglibexec_SCRIPTS)
+    && rm -f -- $(pkglibexec_SCRIPTS)
 
 
 # ---------------
@@ -75,9 +82,16 @@ uninstall: FORCE
 # Portably imitate .PHONY [2].
 FORCE:
 
+# Portably imitate .DELETE_ON_ERROR [3] because m4(1) may fail after the
+# shell creates/truncates the target.
+.m4:
+	$(do_m4) -- $< >$@ || $(do_cleanup)
+	-chmod +x $@
+
 
 # ----------
 # REFERENCES
 #
 #  1. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/cd.html
 #  2. https://www.gnu.org/software/make/manual/html_node/Force-Targets
+#  3. https://www.gnu.org/software/make/manual/html_node/Errors.html

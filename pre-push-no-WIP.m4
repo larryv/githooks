@@ -1,3 +1,27 @@
+changequote([, ])dnl
+divert(1)dnl
+dnl
+dnl
+dnl pre-push-no-WIP.m4
+dnl ------------------
+dnl
+dnl SPDX-License-Identifier: CC0-1.0
+dnl
+dnl Written by Lawrence Velazquez <vq@larryv.me> in:
+dnl   - 2018, 2020, 2022 (as pre-push-no-WIP)
+dnl   - 2023 (as pre-push-no-WIP.m4)
+dnl
+# To the extent possible under law, the author(s) have dedicated all
+# copyright and related and neighboring rights to this software to the
+# public domain worldwide.  This software is distributed without any
+# warranty.
+#
+# You should have received a copy of the CC0 Public Domain Dedication
+# along with this software.  If not, see
+# <https://creativecommons.org/publicdomain/zero/1.0/>.
+dnl
+dnl
+divert[]dnl
 #!/bin/sh
 
 # pre-push-no-WIP - Block "work in progress" commits
@@ -7,14 +31,7 @@
 #
 # Written in 2018, 2020, 2022 by Lawrence Velazquez <vq@larryv.me>.
 #
-# To the extent possible under law, the author(s) have dedicated all
-# copyright and related and neighboring rights to this software to the
-# public domain worldwide.  This software is distributed without any
-# warranty.
-#
-# You should have received a copy of the CC0 Public Domain Dedication
-# along with this software.  If not, see
-# <https://creativecommons.org/publicdomain/zero/1.0/>.
+undivert(1)dnl
 
 
 # Exits with a nonzero status if any outbound commits are WIPs ("works
@@ -34,10 +51,10 @@ exec >&2
 exit_status=0
 
 while read -r local_ref local_sha1 remote_ref remote_sha1; do
-    if [ "$local_sha1" = 0000000000000000000000000000000000000000 ]; then
+    if [[ "$local_sha1" = 0000000000000000000000000000000000000000 ]]; then
         # Deleting a remote ref doesn't push any commits.
         continue
-    elif [ "$remote_sha1" = 0000000000000000000000000000000000000000 ]; then
+    elif [[ "$remote_sha1" = 0000000000000000000000000000000000000000 ]]; then
         # Creating new remote ref.
         range=$local_sha1
     else
@@ -46,10 +63,10 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
     fi
 
     # TODO: Print with the right colors at the right time.
-    git rev-list --pretty='%h %s' --extended-regexp --regexp-ignore-case \
+    git rev-list --pretty='%h %s' --extended-[regexp --regexp]-ignore-case \
         --grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
         --grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \
-        --grep='^\[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]' \
+        --grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
         "$range" \
     | (
         # There's nothing to do if there's no input.  If there is input,
@@ -57,7 +74,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
         read -r || exit
 
         # Print a blank line between ranges.
-        if [ "$exit_status" -ne 0 ]; then
+        if [[ "$exit_status" -ne 0 ]]; then
             echo
         fi
 

@@ -28,6 +28,8 @@ Requirements
 
   - The usual Unix tools, including:
 
+      - m4(1) (build)
+
       - make(1) (build)
 
   - One or more tools for verifying signatures (pre-push-require-sigs):
@@ -45,14 +47,16 @@ Installation, etc.
 These commands must be run from the directory containing the makefile
 (using `make -C` is fine) [B]:
 
-  - To install: `sudo make install`
+  - To install: `make && sudo make install`
   - To uninstall: `sudo make uninstall`
+  - To clean: `make clean`
 
 To use an install location other than /usr/local/libexec/githooks,
 override DESTDIR [7], exec_prefix [8], libexecdir [8], PACKAGE [9], or
-prefix [8].  To modify build commands, override INSTALL [10] or
-INSTALL_PROGRAM [10].
+prefix [8].  To modify build commands, override INSTALL [10],
+INSTALL_PROGRAM [10], M4, or M4FLAGS.
 
+    make M4=gm4 M4FLAGS=-G &&
     sudo make prefix=/opt DESTDIR=/tmp/staging INSTALL=ginstall install
 
 
