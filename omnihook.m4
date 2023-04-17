@@ -22,7 +22,7 @@ dnl
 dnl
 dnl
 divert[]dnl
-#!/bin/sh
+#!/bin/sh -
 
 # omnihook - Polymorphic driver hook
 # ----------------------------------

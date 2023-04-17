@@ -22,7 +22,7 @@ dnl
 dnl
 dnl
 divert[]dnl
-#!/bin/sh
+#!/bin/sh -
 
 # pre-push-no-WIP - Block "work in progress" commits
 # --------------------------------------------------
