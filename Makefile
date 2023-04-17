@@ -31,6 +31,8 @@ INSTALL = ./install-sh
 INSTALL_PROGRAM = $(INSTALL)
 M4 = m4
 PACKAGE = githooks
+SHELLCHECK = shellcheck
+SHELLCHECKFLAGS = --norc
 
 exec_prefix = $(prefix)
 libexecdir = $(exec_prefix)/libexec
@@ -51,6 +53,9 @@ pkglibexecdir = $(libexecdir)/$(PACKAGE)
 
 all: FORCE $(pkglibexec_SCRIPTS)
 
+check: FORCE $(pkglibexec_SCRIPTS)
+	$(SHELLCHECK) $(SHELLCHECKFLAGS) -- $(pkglibexec_SCRIPTS)
+
 clean: FORCE
 	rm -f -- $(pkglibexec_SCRIPTS)
 
@@ -66,6 +71,11 @@ install: FORCE all installdirs
     fi; \
 done
 	$(INSTALL_PROGRAM) -- $(pkglibexec_SCRIPTS) $(DESTDIR)$(pkglibexecdir)
+
+# Depending on "install" would overwrite an existing installation.
+installcheck: FORCE
+	CDPATH= cd -- $(DESTDIR)$(pkglibexecdir) \
+    && $(SHELLCHECK) $(SHELLCHECKFLAGS) -- $(pkglibexec_SCRIPTS)
 
 installdirs: FORCE
 	$(INSTALL) -d -- $(DESTDIR)$(pkglibexecdir)

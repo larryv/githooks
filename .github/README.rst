@@ -62,6 +62,8 @@ Requirements
 
   - |make|_ (build)
 
+- ShellCheck__ (:sh:`make check` and :sh:`make installcheck`)
+
 - One or more tools for verifying signatures (|pre-push-require-sigs|):
 
   - |gpg|__ or a |drop-in replacement (gpg)|__, for PGP signatures
@@ -74,6 +76,7 @@ Requirements
 __ https://git-scm.com
 __ https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
 __ https://pubs.opengroup.org/onlinepubs/9699919799/utilities/m4.html
+__ https://www.shellcheck.net
 __ https://gnupg.org/documentation/manuals/gnupg/Invoking-GPG.html
 __ https://git-scm.com/docs/git-config/2.40.0
    #Documentation/git-config.txt-gpgprogram
@@ -101,16 +104,20 @@ These commands must be run from the directory containing `the makefile`_
 
 - To install: `make && sudo make install`:sh:
 - To uninstall: `sudo make uninstall`:sh:
+- To test before installing: `make check`:sh:
+- To test after installing: `make installcheck`:sh:
 - To clean: `make clean`:sh:
 
 To use an install location other than ``/usr/local/libexec/githooks``,
 override |DESTDIR|__, |exec_prefix|__, |libexecdir|__, |PACKAGE|__, or
 |prefix|__.  To modify build commands, override |INSTALL|_,
-|INSTALL_PROGRAM|__, ``M4``, or ``M4FLAGS``.
+|INSTALL_PROGRAM|__, ``M4``, ``M4FLAGS``, ``SHELLCHECK``, or
+``SHELLCHECKFLAGS``.
 
 .. code:: sh
 
    make M4=gm4 M4FLAGS=-G &&
+   make SHELLCHECKFLAGS='--norc --severity=warning' check &&
    sudo make prefix=/opt DESTDIR=/tmp/staging INSTALL=ginstall install
 
 .. _the makefile: ../Makefile

@@ -32,6 +32,8 @@ Requirements
 
       - make(1) (build)
 
+  - ShellCheck [4] (`make check` and `make installcheck`)
+
   - One or more tools for verifying signatures (pre-push-require-sigs):
 
       - gpg(1) or a drop-in replacement [5], for PGP signatures
@@ -49,14 +51,17 @@ These commands must be run from the directory containing the makefile
 
   - To install: `make && sudo make install`
   - To uninstall: `sudo make uninstall`
+  - To test before installing: `make check`
+  - To test after installing: `make installcheck`
   - To clean: `make clean`
 
 To use an install location other than /usr/local/libexec/githooks,
 override DESTDIR [7], exec_prefix [8], libexecdir [8], PACKAGE [9], or
 prefix [8].  To modify build commands, override INSTALL [10],
-INSTALL_PROGRAM [10], M4, or M4FLAGS.
+INSTALL_PROGRAM [10], M4, M4FLAGS, SHELLCHECK, or SHELLCHECKFLAGS.
 
     make M4=gm4 M4FLAGS=-G &&
+    make SHELLCHECKFLAGS='--norc --severity=warning' check &&
     sudo make prefix=/opt DESTDIR=/tmp/staging INSTALL=ginstall install
 
 
@@ -118,6 +123,7 @@ References
  1. https://git-scm.com/docs/githooks/2.24.0
  2. https://github.com/larryv/arq-helpers
  3. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
+ 4. https://www.shellcheck.net
  5. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgprogram
  6. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgltformatgtprogram
  7. https://www.gnu.org/software/make/manual/html_node/DESTDIR.html
