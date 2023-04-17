@@ -46,6 +46,7 @@ undivert(1)dnl
 exec >&2
 
 # Git prepends its exec directory to PATH, so this just works.
+# shellcheck source=/dev/null  # I don't want to check Git's code.
 . git-sh-setup
 
 exit_status=0

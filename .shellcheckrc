@@ -1,2 +1,0 @@
-# Some hooks source Git's git-sh-setup, which I don't want to check.
-disable=SC1091
