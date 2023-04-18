@@ -15,7 +15,9 @@ pre-push-require-sigs
 
 Maybe there will be more one day!  Reach for the stars.
 
-----
+
+Usage
+-----
 
 The name of each script begins with "FOO-", where FOO is the name of
 a supported Git hook.  Scripts can be installed to a repository's hooks
@@ -34,7 +36,9 @@ its command-line arguments and standard input.  This accommodates the use of
 hooks that are not part of this collection, as long as they adhere to the
 naming convention.
 
-----
+
+Legal
+-----
 
 To the extent possible under law, the author(s) have dedicated all
 copyright and related and neighboring rights to this software to the
@@ -45,7 +49,9 @@ You should have received a copy of the CC0 Public Domain Dedication
 along with this software.  If not, see
 <https://creativecommons.org/publicdomain/zero/1.0/>.
 
-----
+
+References
+----------
 
  1. https://git-scm.com/docs/githooks/2.24.0
  2. https://github.com/larryv/arq-helpers

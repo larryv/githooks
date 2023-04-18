@@ -38,7 +38,9 @@ Maybe there will be more one day!  Reach for the stars.
 __ https://git-scm.com/docs/githooks/2.24.0
 __ https://github.com/larryv/arq-helpers
 
-----
+
+Usage
+-----
 
 The name of each script begins with "*FOO*-", where *FOO* is the name of
 a `supported Git hook`__.  Scripts can be installed to a repository's hooks
@@ -59,7 +61,9 @@ to the naming convention.
 
 __ https://git-scm.com/docs/githooks/2.24.0#_hooks
 
-----
+
+Legal
+-----
 
 To the extent possible under law, `the author(s) have dedicated all
 copyright and related and neighboring rights to this software to the
