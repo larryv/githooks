@@ -30,6 +30,7 @@ code for more details.
 pre-push_-no-WIP
     Blocks commits whose messages begin with a tag labeling them as works in
     progress.
+
 pre-push_-require-sigs
     Blocks commits that lack a good PGP signature.
 
@@ -48,6 +49,7 @@ directory (``git rev-parse --git-path hooks``) in two ways.
 
 -   To use a single "*FOO*-" script, install it as *FOO*.  For example,
     install ``pre-push-require-sigs`` as ``pre-push``.
+
 -   To use multiple "*FOO*-" scripts, install them using their original names
     and install ``omnihook`` as *FOO*.  For example, to use both
     ``pre-push-no-WIP`` and ``pre-push-require-sigs``, install them as-is and
