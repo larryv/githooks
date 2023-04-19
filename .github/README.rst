@@ -21,7 +21,7 @@
 githooks
 ========
 
-This is my collection of `Git hooks`_.  Unlike arq-helpers_, it has earned its
+This is my collection of `Git hooks`__.  Unlike arq-helpers__, it has earned its
 plural moniker. (Barely.)
 
 Here are quick summaries of the hooks.  Refer to the comments in the source
@@ -35,13 +35,13 @@ pre-push_-require-sigs
 
 Maybe there will be more one day!  Reach for the stars.
 
-.. _Git hooks: https://git-scm.com/docs/githooks/2.24.0
-.. _arq-helpers: https://github.com/larryv/arq-helpers
+__ https://git-scm.com/docs/githooks/2.24.0
+__ https://github.com/larryv/arq-helpers
 
 ----
 
 The name of each script begins with "*FOO*-", where *FOO* is the name of
-a `supported Git hook`_.  Scripts can be installed to a repository's hooks
+a `supported Git hook`__.  Scripts can be installed to a repository's hooks
 directory (``git rev-parse --git-path hooks``) in two ways.
 
 -   To use a single "*FOO*-" script, install it as *FOO*.  For example,
@@ -57,14 +57,13 @@ passing along its command-line arguments and standard input.  This accommodates
 the use of hooks that are not part of this collection, as long as they adhere
 to the naming convention.
 
-.. _supported Git hook: https://git-scm.com/docs/githooks/2.24.0#_hooks
+__ https://git-scm.com/docs/githooks/2.24.0#_hooks
 
 ----
 
 To the extent possible under law, the author(s) have `dedicated all
 copyright and related and neighboring rights to this software to the
-public domain worldwide`_.  This software is published from the United
+public domain worldwide`__.  This software is published from the United
 States of America and distributed without any warranty.
 
-.. _dedicated all copyright and related and neighboring rights to this software to the public domain worldwide:
-   https://creativecommons.org/publicdomain/zero/1.0/
+__ https://creativecommons.org/publicdomain/zero/1.0/
