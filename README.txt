@@ -4,6 +4,17 @@ githooks
 This is my collection of Git hooks [1].  Unlike arq-helpers [2], it has earned
 its plural moniker. (Barely.)
 
+Here are quick summaries of the hooks.  Refer to the comments in the source
+code for more details.
+
+pre-push-no-WIP
+    Blocks commits whose messages begin with a tag labeling them as works in
+    progress.
+pre-push-require-sigs
+    Blocks commits that lack a good PGP signature.
+
+Maybe there will be more one day!  Reach for the stars.
+
 ----
 
 The name of each script begins with "FOO-", where FOO is the name of
@@ -22,19 +33,6 @@ all executables in that directory whose names begin with "FOO-", passing along
 its command-line arguments and standard input.  This accommodates the use of
 hooks that are not part of this collection, as long as they adhere to the
 naming convention.
-
-----
-
-Here are quick summaries of the hooks.  Refer to the comments in the source
-code for more details.
-
-pre-push-no-WIP
-    Blocks commits whose messages begin with a tag labeling them as works in
-    progress.
-pre-push-require-sigs
-    Blocks commits that lack a good PGP signature.
-
-Maybe there will be more one day!  Reach for the stars.
 
 ----
 

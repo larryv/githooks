@@ -15,11 +15,28 @@
    <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 
+.. _pre-push: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+
+
 githooks
 ========
 
 This is my collection of `Git hooks`_.  Unlike arq-helpers_, it has earned its
 plural moniker. (Barely.)
+
+Here are quick summaries of the hooks.  Refer to the comments in the source
+code for more details.
+
+pre-push_-no-WIP
+    Blocks commits whose messages begin with a tag labeling them as works in
+    progress.
+pre-push_-require-sigs
+    Blocks commits that lack a good PGP signature.
+
+Maybe there will be more one day!  Reach for the stars.
+
+.. _Git hooks: https://git-scm.com/docs/githooks/2.24.0
+.. _arq-helpers: https://github.com/larryv/arq-helpers
 
 ----
 
@@ -40,18 +57,7 @@ passing along its command-line arguments and standard input.  This accommodates
 the use of hooks that are not part of this collection, as long as they adhere
 to the naming convention.
 
-----
-
-Here are quick summaries of the hooks.  Refer to the comments in the source
-code for more details.
-
-pre-push_-no-WIP
-    Blocks commits whose messages begin with a tag labeling them as works in
-    progress.
-pre-push_-require-sigs
-    Blocks commits that lack a good PGP signature.
-
-Maybe there will be more one day!  Reach for the stars.
+.. _supported Git hook: https://git-scm.com/docs/githooks/2.24.0#_hooks
 
 ----
 
@@ -60,10 +66,5 @@ copyright and related and neighboring rights to this software to the
 public domain worldwide`_.  This software is published from the United
 States of America and distributed without any warranty.
 
-
-.. _Git hooks: https://git-scm.com/docs/githooks/2.24.0
-.. _arq-helpers: https://github.com/larryv/arq-helpers
-.. _supported Git hook: https://git-scm.com/docs/githooks/2.24.0#_hooks
-.. _pre-push: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 .. _dedicated all copyright and related and neighboring rights to this software to the public domain worldwide:
    https://creativecommons.org/publicdomain/zero/1.0/
