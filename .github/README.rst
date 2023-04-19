@@ -61,9 +61,9 @@ __ https://git-scm.com/docs/githooks/2.24.0#_hooks
 
 ----
 
-To the extent possible under law, the author(s) have `dedicated all
+To the extent possible under law, `the author(s) have dedicated all
 copyright and related and neighboring rights to this software to the
 public domain worldwide`__.  This software is published from the United
 States of America and distributed without any warranty.
 
-__ https://creativecommons.org/publicdomain/zero/1.0/
+__ ../COPYING.txt
