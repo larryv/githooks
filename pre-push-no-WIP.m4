@@ -33,15 +33,18 @@ divert[]dnl
 #
 undivert(1)dnl
 
-
-# Exits with a nonzero status if any outbound commits are WIPs ("works
-# in progress") and zero otherwise.  A commit is considered a WIP if its
-# message begins with a recognized keyword -- "FIXUP", "NOCOMMIT",
-# "REWORD", "SQUASH", or "WIP" -- enclosed in braces ("{WIP}"), brackets
-# ("[WIP]"), or parentheses ("(WIP)").  Case is ignored.
+# -------------------------------------------------------------------
+# Exits with a nonzero status if any outgoing commit message contains
+# a line beginning with any of the following strings (ignoring case):
+#
+#   - "(FIXUP)", "(NOCOMMIT)", "(REWORD)", "(SQUASH)", or "(WIP)"
+#   - "[FIXUP]", etc.
+#   - "{FIXUP}", etc.
+#
+# Exits with a zero status otherwise.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
-
+# -------------------------------------------------------------------
 
 exec >&2
 

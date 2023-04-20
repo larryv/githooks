@@ -33,15 +33,15 @@ divert[]dnl
 #
 undivert(1)dnl
 
-
-# When installed to a repository's hooks directory as FOO and invoked by
-# Git, runs every executable file named FOO-* in that directory, passing
-# along all relevant information.  Exits with a nonzero status if any
-# invoked executable does so (or if Git is extremely broken) and zero
-# otherwise.
+# ----------------------------------------------------------------------
+# When used as FOO, runs every "FOO-" executable in the hooks directory of the
+# current Git repository, repeatedly passing along its arguments and
+# standard input.  Exits with a nonzero status if any of those
+# executables does so, if a Git repository cannot be found, or if the
+# standard-input cache cannot be written; exits with zero otherwise.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0
-
+# ----------------------------------------------------------------------
 
 # Git prepends its exec directory to PATH, so this just works.
 # shellcheck source=/dev/null  # I don't want to check Git's code.

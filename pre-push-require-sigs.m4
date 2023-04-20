@@ -33,14 +33,15 @@ divert[]dnl
 #
 undivert(1)dnl
 
-
-# Exits with a zero status if every outbound commit has a good PGP
-# signature (including good signatures that have unknown validity, are
-# expired, or were made by expired or revoked certificates) and nonzero
-# otherwise.
+# ---------------------------------------------------------------------
+# Exits with a zero status if all outgoing commits have good signatures
+# (including ones that have unknown validity, are expired, or were made
+# by keys that are now expired or revoked) and nonzero otherwise.
 #
-# See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
-
+# See also:
+#   - https://git-scm.com/docs/githooks/2.24.0#_pre_push
+#   - https://git-scm.com/docs/gitformat-signature/2.40.0
+# ---------------------------------------------------------------------
 
 exec >&2
 

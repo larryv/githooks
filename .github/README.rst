@@ -30,23 +30,29 @@
 githooks
 ========
 
-This is my collection of `Git hooks`__.  Unlike arq-helpers__, it has earned its
-plural moniker. (Barely.)
-
-Here are quick summaries of the hooks.  Refer to the comments in the source
-code for more details.
+These are some `Git hooks`__ I use regularly.
 
 pre-push_-no-WIP
-    Blocks commits whose messages begin with a tag labeling them as works in
-    progress.
+    |Aborts git push|_ if any outgoing commit message contains a line
+    beginning with any of the following strings (ignoring case):
+
+    - ``(FIXUP)``, ``(NOCOMMIT)``, ``(REWORD)``, ``(SQUASH)``, or
+      ``(WIP)``
+    - ``[FIXUP]``, etc.
+    - ``{FIXUP}``, etc.
 
 pre-push_-require-sigs
-    Blocks commits that lack a good PGP signature.
+    |Aborts git push|_ unless all outgoing commits have good
+    signatures__ (including ones that have unknown validity, are
+    expired, or were made by keys that are now expired or revoked).
 
 Maybe there will be more one day!  Reach for the stars.
 
 __ https://git-scm.com/docs/githooks/2.24.0
-__ https://github.com/larryv/arq-helpers
+.. _Aborts git push: pre-push_
+__ https://git-scm.com/docs/gitformat-signature/2.40.0
+
+.. |Aborts git push| replace:: Aborts :sh:`git push`
 
 
 Requirements
