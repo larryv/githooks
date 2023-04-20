@@ -17,6 +17,8 @@
 
 .. _pre-push: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
+.. |pre-push-require-sigs| replace:: ``pre-push-require-sigs``
+
 
 githooks
 ========
@@ -38,6 +40,45 @@ Maybe there will be more one day!  Reach for the stars.
 
 __ https://git-scm.com/docs/githooks/2.24.0
 __ https://github.com/larryv/arq-helpers
+
+
+Requirements
+------------
+
+- Git__, obviously
+
+- A `shell that conforms to POSIX`__ or comes close enough
+  [#good-shells]_
+
+- The usual Unix tools
+
+- One or more tools for verifying signatures (|pre-push-require-sigs|):
+
+  - |gpg|__ or a |drop-in replacement (gpg)|__, for PGP signatures
+
+  - |gpgsm|__ or a |drop-in replacement (gpgsm)|_, for X.509 signatures
+
+  - |ssh-keygen|__ or a |drop-in replacement (ssh-keygen)|__, for SSH
+    signatures
+
+__ https://git-scm.com
+__ https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
+__ https://gnupg.org/documentation/manuals/gnupg/Invoking-GPG.html
+__ https://git-scm.com/docs/git-config/2.40.0
+   #Documentation/git-config.txt-gpgprogram
+__ https://gnupg.org/documentation/manuals/gnupg/Invoking-GPGSM.html
+.. _drop-in replacement (gpgsm):
+   https://git-scm.com/docs/git-config/2.40.0
+   #Documentation/git-config.txt-gpgltformatgtprogram
+__ https://man.openbsd.org/ssh-keygen.1
+__ `drop-in replacement (gpgsm)`_
+
+.. |gpg| replace:: ``gpg(1)``
+.. |drop-in replacement (gpg)| replace:: drop-in replacement
+.. |gpgsm| replace:: ``gpgsm(1)``
+.. |drop-in replacement (gpgsm)| replace:: drop-in replacement
+.. |ssh-keygen| replace:: ``ssh-keygen(1)``
+.. |drop-in replacement (ssh-keygen)| replace:: drop-in replacement
 
 
 Usage
@@ -73,3 +114,13 @@ public domain worldwide`__.  This software is published from the United
 States of America and distributed without any warranty.
 
 __ ../COPYING.txt
+
+
+Notes
+-----
+
+.. [#good-shells] Shells known to work at one point or another include
+   bash__ 3.2.57.  `Traditional Bourne shells`__ are not supported.
+
+__ https://www.gnu.org/software/bash/
+__ https://www.in-ulm.de/~mascheck/bourne/

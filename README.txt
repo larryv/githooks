@@ -19,6 +19,24 @@ pre-push-require-sigs
 Maybe there will be more one day!  Reach for the stars.
 
 
+Requirements
+------------
+
+  - Git, obviously
+
+  - A shell that conforms to POSIX [3] or comes close enough [A]
+
+  - The usual Unix tools
+
+  - One or more tools for verifying signatures (pre-push-require-sigs):
+
+      - gpg(1) or a drop-in replacement [5], for PGP signatures
+
+      - gpgsm(1) or a drop-in replacement [6], for X.509 signatures
+
+      - ssh-keygen(1) or a drop-in replacement [6], for SSH signatures
+
+
 Usage
 -----
 
@@ -54,11 +72,22 @@ along with this software.  If not, see
 <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 
+Notes
+-----
+
+ A. Shells known to work at one point or another include bash 3.2.57.
+    Traditional Bourne shells [12] are not supported.
+
+
 References
 ----------
 
  1. https://git-scm.com/docs/githooks/2.24.0
  2. https://github.com/larryv/arq-helpers
+ 3. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
+ 5. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgprogram
+ 6. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgltformatgtprogram
+12. https://www.in-ulm.de/~mascheck/bourne/
 
 
 SPDX-License-Identifier: CC0-1.0
