@@ -15,8 +15,12 @@
    <https://creativecommons.org/publicdomain/zero/1.0/>.
 
 
+.. role:: sh(code)
+   :language: sh
+
 .. _pre-push: https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
+.. |pre-push-no-WIP| replace:: ``pre-push-no-WIP``
 .. |pre-push-require-sigs| replace:: ``pre-push-require-sigs``
 
 
@@ -84,25 +88,43 @@ __ `drop-in replacement (gpgsm)`_
 Usage
 -----
 
-The name of each script begins with "*FOO*-", where *FOO* is the name of
-a `supported Git hook`__.  Scripts can be installed to a repository's hooks
-directory (``git rev-parse --git-path hooks``) in two ways.
+Most hooks' filenames begin with "*FOO*-", where *FOO* is the name of
+a `supported Git hook`__.  A hook's prefix indicates its intended role
+|--| e.g., |pre-push-require-sigs| is meant to be used as |pre-push|_.
+To add a "*FOO*-" hook to a repository's hooks directory
+(:sh:`git rev-parse --git-path hooks`):
 
--   To use a single "*FOO*-" script, install it as *FOO*.  For example,
-    install ``pre-push-require-sigs`` as ``pre-push``.
+- Copy or link it as *FOO*.  For example, to use |pre-push-require-sigs|
+  as |pre-push|:
 
--   To use multiple "*FOO*-" scripts, install them using their original names
-    and install ``omnihook`` as *FOO*.  For example, to use both
-    ``pre-push-no-WIP`` and ``pre-push-require-sigs``, install them as-is and
-    install ``omnihook`` as ``pre-push``.
+  .. code:: sh
 
-When installed to a hooks directory as *FOO* and invoked by Git, ``omnihook``
-runs all executables in that directory whose names begin with "*FOO*-",
-passing along its command-line arguments and standard input.  This accommodates
-the use of hooks that are not part of this collection, as long as they adhere
-to the naming convention.
+     ln -s /this/project/pre-push-require-sigs \
+           /example/repo/.git/hooks/pre-push
+
+  This necessarily precludes the use of other "*FOO*-" hooks.
+
+- Copy or link it using its original name, then copy or link
+  ``omnihook`` as *FOO*.  For example, to use both |pre-push-no-WIP| and
+  |pre-push-require-sigs|:
+
+  .. code:: sh
+
+     ln -s /this/project/omnihook \
+           /example/repo/.git/hooks/pre-push &&
+     ln -s /this/project/pre-push-no-WIP \
+           /this/project/pre-push-require-sigs \
+           /example/repo/.git/hooks
+
+  As *FOO*, ``omnihook`` runs every "*FOO*-" executable in the hooks
+  directory, repeatedly passing along its arguments and standard input.
+  Hooks that are external to this collection can be integrated by
+  renaming them to adhere to the "*FOO*-" convention.
 
 __ https://git-scm.com/docs/githooks/2.24.0#_hooks
+
+.. |--| unicode:: U+2014 .. EM DASH
+.. |pre-push| replace:: ``pre-push``
 
 
 Legal
