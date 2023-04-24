@@ -7,7 +7,7 @@ its plural moniker. (Barely.)
 ----
 
 The name of each script begins with "FOO-", where FOO is the name of
-a supported Git hook [3].  Scripts can be installed to a repository's hooks
+a supported Git hook.  Scripts can be installed to a repository's hooks
 directory (`git rev-parse --git-path hooks`) in two ways.
 
 -   To use a single "FOO-" script, install it as FOO.  For example, install
@@ -28,10 +28,10 @@ naming convention.
 Here are quick summaries of the hooks.  Refer to the comments in the source
 code for more details.
 
-pre-push-no-WIP [4]
+pre-push-no-WIP
     Blocks commits whose messages begin with a tag labeling them as works in
     progress.
-pre-push-require-sigs [4]
+pre-push-require-sigs
     Blocks commits that lack a good PGP signature.
 
 Maybe there will be more one day!  Reach for the stars.
@@ -51,8 +51,6 @@ along with this software.  If not, see
 
  1. https://git-scm.com/docs/githooks/2.24.0
  2. https://github.com/larryv/arq-helpers
- 3. https://git-scm.com/docs/githooks/2.24.0#_hooks
- 4. https://git-scm.com/docs/githooks/2.24.0#_pre_push
 
 
 SPDX-License-Identifier: CC0-1.0
