@@ -20,6 +20,8 @@
 
 .. _make: https://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html
 .. _pre-push: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+.. _pre-push-no-WIP: ../pre-push-no-WIP.m4
+.. _pre-push-require-sigs: ../pre-push-require-sigs.m4
 
 .. |make| replace:: ``make(1)``
 .. |pre-push-no-WIP| replace:: ``pre-push-no-WIP``
@@ -32,7 +34,7 @@ githooks
 
 These are some `Git hooks`__ I use regularly.
 
-pre-push_-no-WIP
+|pre-push-no-WIP|_
     |Aborts git push|_ if any outgoing commit message contains a line
     beginning with any of the following strings (ignoring case):
 
@@ -41,7 +43,7 @@ pre-push_-no-WIP
     - ``[FIXUP]``, etc.
     - ``{FIXUP}``, etc.
 
-pre-push_-require-sigs
+|pre-push-require-sigs|_
     |Aborts git push|_ unless all outgoing commits have good
     signatures__ (including ones that have unknown validity, are
     expired, or were made by keys that are now expired or revoked).
@@ -71,7 +73,7 @@ Requirements
 
 - ShellCheck__ (:sh:`make check` and :sh:`make installcheck`)
 
-- One or more tools for verifying signatures (|pre-push-require-sigs|):
+- One or more tools for verifying signatures (|pre-push-require-sigs|_):
 
   - |gpg|__ or a |drop-in replacement (gpg)|__, for PGP signatures
 
@@ -157,7 +159,7 @@ Usage
 
 Most hooks' filenames begin with "*FOO*-", where *FOO* is the name of
 a `supported Git hook`__.  A hook's prefix indicates its intended role
-|--| e.g., |pre-push-require-sigs| is meant to be used as |pre-push|_.
+|--| e.g., |pre-push-require-sigs|_ is meant to be used as |pre-push|_.
 To add a "*FOO*-" hook to a repository's hooks directory
 (:sh:`git rev-parse --git-path hooks`):
 
@@ -172,7 +174,7 @@ To add a "*FOO*-" hook to a repository's hooks directory
   This necessarily precludes the use of other "*FOO*-" hooks.
 
 - Copy or link it using its original name, then copy or link
-  ``omnihook`` as *FOO*.  For example, to use both |pre-push-no-WIP| and
+  ``omnihook`` as *FOO*.  For example, to use both |pre-push-no-WIP|_ and
   |pre-push-require-sigs|:
 
   .. code:: sh
