@@ -97,7 +97,7 @@ dnl TODO: Dynamically wrap this comment somehow.
 ifdef([USE_STDIN_CACHE],
 [# Helper function for cleanup traps.
 cleanup() {
-    rm -f -- "$tmpfile"
+    rm -f -- "$stdin_cache"
 }
 
 ])dnl
@@ -116,7 +116,7 @@ ifdef([USE_STDIN_CACHE],
 # https://mywiki.wooledge.org/SignalTrap
 
 hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
-tmpfile=~/.githooks[_]defn([HOOK])${hostname:+_$hostname}_$$.tmp
+stdin_cache=~/.githooks.defn([HOOK]).stdin${hostname:+.$hostname}.$$
 cleanup || exit
 
 trap cleanup EXIT
@@ -125,13 +125,13 @@ for sig in HUP INT QUIT TERM; do
     trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig"
 done
 
-cat >"$tmpfile" || exit
+cat >"$stdin_cache" || exit
 
 ])dnl
 for hook in "$hooks_dir"/defn([HOOK])-*; do
     # Ignore nonexecutable hooks because Git does.  Technically there's
     # a TOCTOU bug here, but I don't think it's worth worrying about.
     if test -f "$hook" && test -x "$hook"; then
-        "$hook" "$@" ifdef([USE_STDIN_CACHE], [<"$tmpfile" ])|| exit
+        "$hook" "$@" ifdef([USE_STDIN_CACHE], [<"$stdin_cache" ])|| exit
     fi
 done
