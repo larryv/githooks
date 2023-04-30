@@ -45,7 +45,7 @@ prefix = /usr/local
 
 do_cleanup = { rc=$$?; rm -f -- $@ && exit "$$rc"; }
 do_m4 = $(M4) $(M4FLAGS) -D SHELL=$(SHELL)
-pkglibexec_SCRIPTS = omnihook pre-push-no-WIP pre-push-require-sigs
+pkglibexec_SCRIPTS = pre-push pre-push-no-WIP pre-push-require-sigs
 pkglibexecdir = $(libexecdir)/$(PACKAGE)
 
 
@@ -95,6 +95,11 @@ FORCE:
 
 # Portably imitate .DELETE_ON_ERROR [3] because m4(1) may fail after the
 # shell creates/truncates the target.
+
+pre-push: omnihook.m4
+	$(do_m4) -D HOOK=$@ omnihook.m4 >$@ || $(do_cleanup)
+	-chmod +x $@
+
 .m4:
 	$(do_m4) -- $< >$@ || $(do_cleanup)
 	-chmod +x $@

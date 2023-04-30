@@ -86,17 +86,16 @@ a "FOO-" hook to a repository's hooks directory (`git rev-parse
 
     This necessarily precludes the use of other "FOO-" hooks.
 
-  - Copy or link it using its original name, then copy or link omnihook
-    as FOO.  For example, to use both pre-push-no-WIP and
+  - Copy or link it using its original name, then copy or link the FOO
+    driver hook.  For example, to use both pre-push-no-WIP and
     pre-push-require-sigs:
 
-        ln -s /usr/local/libexec/githooks/omnihook \
-              /example/repo/.git/hooks/pre-push &&
-        ln -s /usr/local/libexec/githooks/pre-push-no-WIP \
+        ln -s /usr/local/libexec/githooks/pre-push \
+              /usr/local/libexec/githooks/pre-push-no-WIP \
               /usr/local/libexec/githooks/pre-push-require-sigs \
               /example/repo/.git/hooks
 
-    As FOO, omnihook runs every "FOO-" executable in the hooks
+    The FOO driver hook runs every "FOO-" executable in the hooks
     directory, repeatedly passing along its arguments and standard
     input.  Hooks that are external to this collection can be integrated
     by renaming them to adhere to the "FOO-" convention.

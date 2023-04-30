@@ -21,20 +21,67 @@ dnl
 # <https://creativecommons.org/publicdomain/zero/1.0/>.
 dnl
 dnl
+divert(-1)
+
+dnl Validate given hook name and configure behavior appropriately.
+undefine([USE_STDIN_CACHE])
+ifdef([HOOK],
+      [ifelse(defn([HOOK]), [applypatch-msg], [],
+              defn([HOOK]), [commit-msg], [],
+              defn([HOOK]), [fsmonitor-watchman], [],
+              defn([HOOK]), [p4-changelist], [],
+              defn([HOOK]), [p4-post-changelist], [],
+              defn([HOOK]), [p4-pre-submit], [],
+              defn([HOOK]), [p4-prepare-changelist], [],
+              defn([HOOK]), [post-applypatch], [],
+              defn([HOOK]), [post-checkout], [],
+              defn([HOOK]), [post-commit], [],
+              defn([HOOK]), [post-index-change], [],
+              defn([HOOK]), [post-merge], [],
+              defn([HOOK]), [post-receive], [define([USE_STDIN_CACHE])],
+              defn([HOOK]), [post-rewrite], [define([USE_STDIN_CACHE])],
+              defn([HOOK]), [post-update], [],
+              defn([HOOK]), [pre-applypatch], [],
+              defn([HOOK]), [pre-auto-gc], [],
+              defn([HOOK]), [pre-commit], [],
+              defn([HOOK]), [pre-merge-commit], [],
+              defn([HOOK]), [pre-push], [define([USE_STDIN_CACHE])],
+              defn([HOOK]), [pre-rebase], [],
+              defn([HOOK]), [pre-receive], [define([USE_STDIN_CACHE])],
+              defn([HOOK]), [prepare-commit-msg], [],
+              defn([HOOK]), [proc-receive], [],
+              defn([HOOK]), [push-to-checkout], [],
+              defn([HOOK]), [reference-transaction], [],
+              defn([HOOK]), [sendemail-validate], [],
+              defn([HOOK]), [update], [],
+              [errprint([omnihook.m4: invalid HOOK value: ]defn([HOOK])[
+])m4exit(1)])],
+      [errprint([omnihook.m4: HOOK undefined
+])m4exit(1)])
+
+dnl Concatenates ARG2 copies of ARG1.  Expands to null if ARG2 doesn't
+dnl evaluate to a positive integer.  Not recognized without arguments.
+define([repeat], [ifelse([$#], 0, [[$0]], [$0_([$1], eval([$2]))])])
+define([repeat_], [ifelse(eval(len([$1]) && $2 > 0), 1, [$0_($@)])])
+define([repeat__], [ifelse([$2], 0, [], [$0([$1], decr([$2]))$1])])
+
 divert[]dnl
 [#]!ifdef([SHELL], [defn([SHELL])], [[/bin/sh]]) -
 
-# omnihook - Polymorphic driver hook
-# ----------------------------------
+[#] defn([HOOK])
+[#] repeat(-, len(defn([HOOK])))
 #
 # SPDX-License-Identifier: CC0-1.0
 #
-# Written in 2018, 2020, 2022-2023 by Lawrence Velazquez <vq@larryv.me>.
+# Written by Lawrence Velazquez <vq@larryv.me> in:
+#   - 2018, 2020, 2022-2023 (as omnihook)
+#   - 2023 (as part of omnihook.m4)
 #
 undivert(1)dnl
 
+dnl TODO: Dynamically wrap this comment somehow.
 # ----------------------------------------------------------------------
-# When used as FOO, runs every "FOO-" executable in the hooks directory of the
+[#] Runs every "defn([HOOK])-" executable in the hooks directory of the
 # current Git repository, repeatedly passing along its arguments and
 # standard input.  Exits with a nonzero status if any of those
 # executables does so, if a Git repository cannot be found, or if the
@@ -47,53 +94,44 @@ undivert(1)dnl
 # shellcheck source=/dev/null  # I don't want to check Git's code.
 . git-sh-setup
 
-# Helper function for cleanup traps.
+ifdef([USE_STDIN_CACHE],
+[# Helper function for cleanup traps.
 cleanup() {
     rm -f -- "$tmpfile"
 }
 
+])dnl
 # https://www.etalabs.net/sh_tricks.html, "Getting non-clobbered output
 # from command substitution"
 hooks_dir=$(git rev-parse --git-path hooks && echo .) || exit
 hooks_dir=${hooks_dir%??}
 
-# Git executes hooks "normally", so $0 should contain the pathname.
-hooks_prefix=${0##*/}
-
-# If receiving data on standard input, save it to be repeatedly fed to
+ifdef([USE_STDIN_CACHE],
+[# Save standard input to be repeatedly fed to
 # the invoked hooks later.  Using a temporary file is more complicated
 # and possibly slower than using a variable and here-document, but it
 # ensures predictable memory usage.
-case $hooks_prefix in
-    post-receive | post-rewrite | pre-push | pre-receive)
-        # https://mywiki.wooledge.org/BashFAQ/062
-        # https://mywiki.wooledge.org/SignalTrap
 
-        hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
-        tmpfile=~/.githooks_${hooks_prefix}${hostname:+_$hostname}_$$.tmp
-        cleanup || exit
+# https://mywiki.wooledge.org/BashFAQ/062
+# https://mywiki.wooledge.org/SignalTrap
 
-        trap cleanup EXIT
-        for sig in HUP INT QUIT TERM; do
-            # Let the shell produce its "killed by signal" exit status.
-            trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig"
-        done
+hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
+tmpfile=~/.githooks[_]defn([HOOK])${hostname:+_$hostname}_$$.tmp
+cleanup || exit
 
-        cat >"$tmpfile" || exit
-        ;;
-    *)
-        tmpfile=
-        ;;
-esac
+trap cleanup EXIT
+for sig in HUP INT QUIT TERM; do
+    # Let the shell produce its "killed by signal" exit status.
+    trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig"
+done
 
-for hook in "$hooks_dir/$hooks_prefix"-*; do
+cat >"$tmpfile" || exit
+
+])dnl
+for hook in "$hooks_dir"/defn([HOOK])-*; do
     # Ignore nonexecutable hooks because Git does.  Technically there's
     # a TOCTOU bug here, but I don't think it's worth worrying about.
     if test -f "$hook" && test -x "$hook"; then
-        if test -n "$tmpfile"; then
-            "$hook" "$@" <"$tmpfile"
-        else
-            "$hook" "$@"
-        fi || exit
+        "$hook" "$@" ifdef([USE_STDIN_CACHE], [<"$tmpfile" ])|| exit
     fi
 done
