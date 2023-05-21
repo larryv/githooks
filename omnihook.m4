@@ -102,6 +102,23 @@ cleanup() {
     fi
 }
 
+# Sends the given signal to the current shell process.
+self_signal() {
+    if test "$#" -eq 1 && test "$1"; then
+        if kill -0 "$$" 2>/dev/null; then
+            # Some implementations (e.g., BusyBox [1]) only have `-SIG`.
+            kill "-$1" "$$"
+        else
+            # POSIX.1-2017 allows `kill -s SIG` without `kill -SIG` [2],
+            # although I don't know of any implementations that do this.
+            kill -s "$1" "$$"
+        fi
+    else
+        echo 'usage: self_signal sig' >&2
+        return 1
+    fi
+}
+
 ])dnl
 # Get a pathname to the hooks directory.  Handle it robustly [3].
 hooks_dir=$(git rev-parse --git-path hooks && echo .) || exit
@@ -129,7 +146,7 @@ other_sigs='EMT IOT LOST STKFLT'
 for sig in $xsi_sigs $aix_sigs $other_sigs; do
     # Self-signal to inform the caller of the abnormal exit [7].
     # shellcheck disable=SC2064
-    trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig" 2>/dev/null
+    trap "cleanup; trap $sig; self_signal $sig" "$sig" 2>/dev/null
 done
 
 # Cache standard input to pass along to the invoked hooks.
@@ -145,6 +162,8 @@ for hook in "$hooks_dir"/defn([HOOK])-*; do
 done
 
 # References
+#  1. https://busybox.net/downloads/BusyBox.html#kill
+#  2. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/kill.html
 #  3. https://www.etalabs.net/sh_tricks.html
 #  4. https://mywiki.wooledge.org/BashFAQ/062
 #  5. https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/signal.h.html
