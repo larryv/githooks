@@ -95,35 +95,35 @@ dnl TODO: Dynamically wrap this comment somehow.
 . git-sh-setup
 
 ifdef([USE_STDIN_CACHE],
-[# Helper function for cleanup traps.
+[# Deletes temporary files.
 cleanup() {
     rm -f -- "$stdin_cache"
 }
 
 ])dnl
-# https://www.etalabs.net/sh_tricks.html, "Getting non-clobbered output
-# from command substitution"
+# Get a pathname to the hooks directory.  Handle it robustly [3].
 hooks_dir=$(git rev-parse --git-path hooks && echo .) || exit
 hooks_dir=${hooks_dir%??}
 
 ifdef([USE_STDIN_CACHE],
-[# Save standard input to be repeatedly fed to
-# the invoked hooks later.  Using a temporary file is more complicated
-# and possibly slower than using a variable and here-document, but it
-# ensures predictable memory usage.
-
-# https://mywiki.wooledge.org/BashFAQ/062
-# https://mywiki.wooledge.org/SignalTrap
-
+[# Generate temporary pathname.  $HOME is private, so don't worry about
+# malicious symbolic links and such [4].  (Ill-gotten write access to
+# $HOME is decidedly out of scope here.)
+# shellcheck disable=SC3028
 hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
 stdin_cache=~/.githooks.defn([HOOK]).stdin${hostname:+.$hostname}.$$
 
+# Clean up on normal exit.
 trap cleanup EXIT
+
+# Clean up upon receiving a default-fatal signal.
 for sig in HUP INT QUIT TERM; do
-    # Let the shell produce its "killed by signal" exit status.
+    # Self-signal to inform the caller of the abnormal exit [7].
+    # shellcheck disable=SC2064
     trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig"
 done
 
+# Cache standard input to pass along to the invoked hooks.
 cat >"$stdin_cache" || exit
 
 ])dnl
@@ -134,3 +134,8 @@ for hook in "$hooks_dir"/defn([HOOK])-*; do
         "$hook" "$@" ifdef([USE_STDIN_CACHE], [<"$stdin_cache" ])|| exit
     fi
 done
+
+# References
+#  3. https://www.etalabs.net/sh_tricks.html
+#  4. https://mywiki.wooledge.org/BashFAQ/062
+#  7. https://mywiki.wooledge.org/SignalTrap
