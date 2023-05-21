@@ -117,7 +117,6 @@ ifdef([USE_STDIN_CACHE],
 
 hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
 stdin_cache=~/.githooks.defn([HOOK]).stdin${hostname:+.$hostname}.$$
-cleanup || exit
 
 trap cleanup EXIT
 for sig in HUP INT QUIT TERM; do
