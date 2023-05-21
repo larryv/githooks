@@ -97,7 +97,9 @@ dnl TODO: Dynamically wrap this comment somehow.
 ifdef([USE_STDIN_CACHE],
 [# Deletes temporary files.
 cleanup() {
-    rm -f -- "$stdin_cache"
+    if test "$stdin_cache"; then
+        rm -f -- "$stdin_cache"
+    fi
 }
 
 ])dnl
