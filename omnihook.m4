@@ -118,11 +118,18 @@ stdin_cache=~/.githooks.defn([HOOK]).stdin${hostname:+.$hostname}.$$
 # Clean up on normal exit.
 trap cleanup EXIT
 
-# Clean up upon receiving a default-fatal signal.
-for sig in HUP INT QUIT TERM; do
+# Clean up upon receiving a default-fatal signal.  Handle signals that
+# are in POSIX.1-2017 [5], as well as nonstandard signals from a variety
+# of systems [6] (although most of these are unlikely to be delivered in
+# uncontrived conditions).
+posix_sigs='ABRT ALRM BUS FPE HUP ILL INT PIPE QUIT SEGV TERM USR1 USR2'
+xsi_sigs="$posix_sigs POLL PROF SYS TRAP VTALRM XCPU XFSZ"
+aix_sigs='GRANT MIGRATE MSG PRE RETRACT SAK SOUND TALRM'
+other_sigs='EMT IOT LOST STKFLT'
+for sig in $xsi_sigs $aix_sigs $other_sigs; do
     # Self-signal to inform the caller of the abnormal exit [7].
     # shellcheck disable=SC2064
-    trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig"
+    trap "cleanup; trap - $sig; kill -s $sig"' "$$"' "$sig" 2>/dev/null
 done
 
 # Cache standard input to pass along to the invoked hooks.
@@ -140,4 +147,6 @@ done
 # References
 #  3. https://www.etalabs.net/sh_tricks.html
 #  4. https://mywiki.wooledge.org/BashFAQ/062
+#  5. https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/signal.h.html
+#  6. https://docs.google.com/spreadsheets/d/1R7GgFyQMyEFfSwyj3J5aQr2mRAvnteSqQSz3t-qodYU/edit?usp=sharing
 #  7. https://mywiki.wooledge.org/SignalTrap
