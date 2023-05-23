@@ -52,7 +52,7 @@ exec >&2
 # shellcheck source=/dev/null  # I don't want to check Git's code.
 . git-sh-setup
 
-exit_status=0
+rc=0
 
 while read -r local_ref local_sha1 remote_ref remote_sha1; do
 	if test "$local_sha1" = 0000000000000000000000000000000000000000; then
@@ -78,7 +78,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 		read -r || exit
 
 		# Print an empty line between commit lists.
-		if test "$exit_status" -ne 0; then
+		if test "$rc" -ne 0; then
 			echo
 		fi
 
@@ -91,10 +91,10 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 		# else through.
 		sed '/^commit /d'
 
-		# https://mywiki.wooledge.org/BashFAQ/024 - Setting exit_status
+		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
 		# from inside the pipeline is not portable, so use the
 		# pipeline's exit status to set it on the outside.
-	) && exit_status=1
+	) && rc=1
 done
 
-exit "$exit_status"
+exit "$rc"
