@@ -66,7 +66,6 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
         range=$remote_sha1..$local_sha1
     fi
 
-    # TODO: Print with the right colors at the right time.
     git rev-list --pretty='%h %s' --extended-[regexp --regexp]-ignore-case \
         --grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
         --grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \

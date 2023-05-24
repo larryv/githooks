@@ -94,7 +94,6 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
                     "${0##*/}" "$local_ref"
             fi
 
-            # TODO: Print with the right colors at the right time.
             printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
         done
 
