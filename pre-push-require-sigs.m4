@@ -43,6 +43,9 @@ undivert(1)dnl
 #   - https://git-scm.com/docs/gitformat-signature/2.40.0
 # ---------------------------------------------------------------------
 
+# I tried writing this whole thing in awk(1) but gave up due to an
+# overabundance of implementation wrinkles.  (See commit 2ef18bd.)
+
 exec >&2
 
 # Git prepends its exec directory to PATH, so this just works.
@@ -64,9 +67,6 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 	fi
 
 	git rev-list --pretty='%h %G? %s' "$range" | {
-		# I tried this in awk(1) but gave up due to an overabundance of
-		# implementation wrinkles.  (See commit 2ef18bd.)
-
 		range_blocked=no
 
 		# Every other line is "commit [full SHA1]", which we don't want.
@@ -84,11 +84,12 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 			if test "$range_blocked" = no; then
 				range_blocked=yes
 
-				# Print a blank line between ranges.
+				# Print an empty line between commit lists.
 				if test "$exit_status" -ne 0; then
 					echo
 				fi
 
+				# Print a summary, then the commit list.
 				printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
 				printf '%s: commits in %s without good signatures:\n' \
 					"${0##*/}" "$local_ref"
@@ -97,9 +98,9 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 			printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
 		done
 
-		# https://mywiki.wooledge.org/BashFAQ/024 - The enclosing
-		# command grouping may run in a subshell, so use the exit status
-		# of the pipeline to set 'exit_status' on the outside.
+		# https://mywiki.wooledge.org/BashFAQ/024 - Setting exit_status
+		# from inside the pipeline is not portable, so use the
+		# pipeline's exit status to set it on the outside.
 		test "$range_blocked" = yes
 	} && exit_status=1
 done

@@ -106,11 +106,13 @@ cleanup() {
 self_signal() {
 	if test "$#" -eq 1 && test "$1"; then
 		if kill -0 "$$" 2>/dev/null; then
-			# Some implementations (e.g., BusyBox [1]) only have `-SIG`.
+			# Some implementations only have `-SIG` (e.g.,
+			# BusyBox [1]).
 			kill "-$1" "$$"
 		else
-			# POSIX.1-2017 allows `kill -s SIG` without `kill -SIG` [2],
-			# although I don't know of any implementations that do this.
+			# POSIX.1-2017 allows implementations to have
+			# `-s SIG` without `-SIG` [2], although I don't
+			# know of any that do so.
 			kill -s "$1" "$$"
 		fi
 	else
@@ -154,8 +156,8 @@ cat >"$stdin_cache" || exit
 
 ])dnl
 for hook in "$hooks_dir"/defn([HOOK])-*; do
-	# Ignore nonexecutable hooks because Git does.  Technically there's
-	# a TOCTOU bug here, but I don't think it's worth worrying about.
+	# Ignore nonexecutable hooks, as Git does.  Technically there's
+	# a TOCTOU bug here, but it's not worth worrying about.
 	if test -f "$hook" && test -x "$hook"; then
 		"$hook" "$@" ifdef([READS_STDIN], [<"$stdin_cache" ])|| exit
 	fi

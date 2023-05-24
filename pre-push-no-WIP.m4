@@ -72,15 +72,17 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 		--grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
 		"$range" \
 	| (
-		# There's nothing to do if there's no input.  If there is input,
-		# discard the first line, which is a "commit [full SHA1]" line.
+		# If there's no input, there are no WIP commits.
+		# Discard the first line, which is a "commit
+		# [full SHA1]" line.
 		read -r || exit
 
-		# Print a blank line between ranges.
+		# Print an empty line between commit lists.
 		if test "$exit_status" -ne 0; then
 			echo
 		fi
 
+		# Print a summary, then the commit list.
 		printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
 		printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 
@@ -88,6 +90,10 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 		# lines, so we have to discard them ourselves.  Let everything
 		# else through.
 		sed '/^commit /d'
+
+		# https://mywiki.wooledge.org/BashFAQ/024 - Setting exit_status
+		# from inside the pipeline is not portable, so use the
+		# pipeline's exit status to set it on the outside.
 	) && exit_status=1
 done
 
