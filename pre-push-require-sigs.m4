@@ -66,43 +66,47 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 		range=$remote_sha1..$local_sha1
 	fi
 
-	git rev-list --pretty='%h %G? %s' "$range" | {
-		range_blocked=no
+	if
+		git rev-list --pretty='%h %G? %s' "$range" | {
+			range_blocked=no
 
-		# Every other line is "commit [full SHA1]", which we don't want.
-		# (Only the "oneline" pretty-format omits them.)
-		while read -r && read -r hash sig_status subject; do
-			# See git-rev-list(1) for possible outputs of '%G?'.
-			case $sig_status in
-				[[GUXYR]]) continue ;;
-				B) sig_status_msg='bad signature' ;;
-				E) sig_status_msg="cannot check signature" ;;
-				N) sig_status_msg='no signature' ;;
-				*) sig_status_msg='unknown signature status' ;;
-			esac
+			# Every other line is "commit [full SHA1]", which we don't want.
+			# (Only the "oneline" pretty-format omits them.)
+			while read -r && read -r hash sig_status subject; do
+				# See git-rev-list(1) for possible outputs of '%G?'.
+				case $sig_status in
+					[[GUXYR]]) continue ;;
+					B) sig_status_msg='bad signature' ;;
+					E) sig_status_msg="cannot check signature" ;;
+					N) sig_status_msg='no signature' ;;
+					*) sig_status_msg='unknown signature status' ;;
+				esac
 
-			if test "$range_blocked" = no; then
-				range_blocked=yes
+				if test "$range_blocked" = no; then
+					range_blocked=yes
 
-				# Print an empty line between commit lists.
-				if test "$rc" -ne 0; then
-					echo
+					# Print an empty line between commit lists.
+					if test "$rc" -ne 0; then
+						echo
+					fi
+
+					# Print a summary, then the commit list.
+					printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
+					printf '%s: commits in %s without good signatures:\n' \
+						"${0##*/}" "$local_ref"
 				fi
 
-				# Print a summary, then the commit list.
-				printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
-				printf '%s: commits in %s without good signatures:\n' \
-					"${0##*/}" "$local_ref"
-			fi
+				printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
+			done
 
-			printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
-		done
-
+			test "$range_blocked" = yes
+		}
+	then
 		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
 		# from inside the pipeline is not portable, so use the
 		# pipeline's exit status to set it on the outside.
-		test "$range_blocked" = yes
-	} && rc=1
+		rc=1
+	fi
 done
 
 exit "$rc"

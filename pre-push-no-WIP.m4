@@ -66,35 +66,38 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 		range=$remote_sha1..$local_sha1
 	fi
 
-	git rev-list --pretty='%h %s' --extended-[regexp --regexp]-ignore-case \
-		--grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
-		--grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \
-		--grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
-		"$range" \
-	| (
-		# If there's no input, there are no WIP commits.
-		# Discard the first line, which is a "commit
-		# [full SHA1]" line.
-		read -r || exit
+	if
+		git rev-list --pretty='%h %s' --extended-[regexp --regexp]-ignore-case \
+			--grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
+			--grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \
+			--grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
+			"$range" \
+		| (
+			# If there's no input, there are no WIP commits.
+			# Discard the first line, which is a "commit
+			# [full SHA1]" line.
+			read -r || exit
 
-		# Print an empty line between commit lists.
-		if test "$rc" -ne 0; then
-			echo
-		fi
+			# Print an empty line between commit lists.
+			if test "$rc" -ne 0; then
+				echo
+			fi
 
-		# Print a summary, then the commit list.
-		printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
-		printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
+			# Print a summary, then the commit list.
+			printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
+			printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 
-		# Only the "oneline" pretty-format omits "commit [full SHA1]"
-		# lines, so we have to discard them ourselves.  Let everything
-		# else through.
-		sed '/^commit /d'
-
+			# Only the "oneline" pretty-format omits "commit [full SHA1]"
+			# lines, so we have to discard them ourselves.  Let everything
+			# else through.
+			sed '/^commit /d'
+		)
+	then
 		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
 		# from inside the pipeline is not portable, so use the
 		# pipeline's exit status to set it on the outside.
-	) && rc=1
+		rc=1
+	fi
 done
 
 exit "$rc"
