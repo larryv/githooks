@@ -67,16 +67,14 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 	fi
 
 	if
-		git rev-list --pretty='%h %s' --extended-[regexp --regexp]-ignore-case \
+		git rev-list --oneline --extended-[regexp --regexp]-ignore-case \
 			--grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
 			--grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \
 			--grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
 			"$range" \
 		| (
 			# If there's no input, there are no WIP commits.
-			# Discard the first line, which is a "commit
-			# [full SHA1]" line.
-			read -r || exit
+			read -r first_line || exit
 
 			# Print an empty line between commit lists.
 			if test "$rc" -ne 0; then
@@ -86,11 +84,8 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 			# Print a summary, then the commit list.
 			printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
 			printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
-
-			# Only the "oneline" pretty-format omits "commit [full SHA1]"
-			# lines, so we have to discard them ourselves.  Let everything
-			# else through.
-			sed '/^commit /d'
+			printf %s\\n "$first_line"
+			cat
 		)
 	then
 		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
