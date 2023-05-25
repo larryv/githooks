@@ -86,6 +86,9 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 			printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 			printf %s\\n "$first_line"
 			cat
+
+			# Ensure rc gets set to 1.
+			:
 		)
 	then
 		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
