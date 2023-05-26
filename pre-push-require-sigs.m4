@@ -67,40 +67,35 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 	fi
 
 	if
-		git rev-list --pretty='%h %G? %s' "$range" | {
-			range_blocked=no
+		git rev-list --pretty='%h %G? %s' "$range" | awk '
+			# Skip good commits and commit headers.  (Git
+			# 2.33 and later have --no-commit-header.)
+			# Print bad commits with more helpful statuses.
+			$1 != "commit" &&
+			$2 = $2 ~ [/^[GUXYR]$/] ? "" : \
+			     $2 == "B" ? "bad signature:" : \
+			     $2 == "E" ? "cannot check signature:" : \
+			     $2 == "N" ? "no signature:" : \
+			                 "unknown signature status:"
+		' | (
+			# If there's no input, there are no bad commits.
+			read -r first_line || exit
 
-			# Every other line is "commit [full SHA1]", which we don't want.
-			# (Only the "oneline" pretty-format omits them.)
-			while read -r && read -r hash sig_status subject; do
-				# See git-rev-list(1) for possible outputs of '%G?'.
-				case $sig_status in
-					[[GUXYR]]) continue ;;
-					B) sig_status_msg='bad signature' ;;
-					E) sig_status_msg="cannot check signature" ;;
-					N) sig_status_msg='no signature' ;;
-					*) sig_status_msg='unknown signature status' ;;
-				esac
+			# Print an empty line between commit lists.
+			if test "$rc" -ne 0; then
+				echo
+			fi
 
-				if test "$range_blocked" = no; then
-					range_blocked=yes
+			# Print a summary, then the commit list.
+			printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
+			printf '%s: commits in %s without good signatures:\n' \
+				"${0##*/}" "$local_ref"
+			printf %s\\n "$first_line"
+			cat
 
-					# Print an empty line between commit lists.
-					if test "$rc" -ne 0; then
-						echo
-					fi
-
-					# Print a summary, then the commit list.
-					printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
-					printf '%s: commits in %s without good signatures:\n' \
-						"${0##*/}" "$local_ref"
-				fi
-
-				printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
-			done
-
-			test "$range_blocked" = yes
-		}
+			# Ensure rc gets set to 1.
+			:
+		)
 	then
 		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
 		# from inside the pipeline is not portable, so use the
