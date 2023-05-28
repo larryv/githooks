@@ -73,10 +73,10 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 			# Print bad commits with more helpful statuses.
 			$1 != "commit" &&
 			$2 = $2 ~ [/^[GUXYR]$/] ? "" : \
-			     $2 == "B" ? "bad signature:" : \
-			     $2 == "E" ? "cannot check signature:" : \
-			     $2 == "N" ? "no signature:" : \
-			                 "unknown signature status:"
+			     $2 == "B" ? "(bad signature)" : \
+			     $2 == "E" ? "(cannot check signature)" : \
+			     $2 == "N" ? "(no signature)" : \
+			                 "(unknown signature status)"
 		' | (
 			# If there's no input, there are no bad commits.
 			read -r first_line || exit
