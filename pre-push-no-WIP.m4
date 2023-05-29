@@ -35,15 +35,18 @@ undivert(1)dnl
 
 # ----------------------------------------------------------------------
 # Exits with a nonzero status if any outgoing commit message begins with
-# any of the following strings:
+# any of the following strings (whitespace included):
 #
 #   - "(FIXUP)", "(NOCOMMIT)", "(REWORD)", "(SQUASH)", or "(WIP)"
 #   - "[FIXUP]", etc.
 #   - "{FIXUP}", etc.
+#   - "amend! ", "fixup! ", or "squash! "
 #
 # Exits with a zero status otherwise.
 #
-# See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
+# See also:
+#   - https://git-scm.com/docs/githooks/2.24.0#_pre_push
+#   - https://git-scm.com/docs/git-rebase/2.40.0#Documentation/git-rebase.txt---autosquash
 # ----------------------------------------------------------------------
 
 exec >&2
@@ -55,7 +58,8 @@ exec >&2
 wip_re=\
 ['^[^ ]+ \((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))
 ^[^ ]+ \{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}
-^[^ ]+ \[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]']
+^[^ ]+ \[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]
+^[^ ]+ (amend|fixup|squash)![ ]']
 
 rc=0
 

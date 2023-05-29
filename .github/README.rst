@@ -36,12 +36,13 @@ These are some `Git hooks`__ I use regularly.
 
 |pre-push-no-WIP|_
     |Aborts git push|_ if any outgoing commit message begins with any of
-    the following strings:
+    the following strings (whitespace included):
 
     - ``(FIXUP)``, ``(NOCOMMIT)``, ``(REWORD)``, ``(SQUASH)``, or
       ``(WIP)``
     - ``[FIXUP]``, etc.
     - ``{FIXUP}``, etc.
+    - |autosquash prefixes|__
 
 |pre-push-require-sigs|_
     |Aborts git push|_ unless all outgoing commits have good
@@ -52,9 +53,13 @@ Maybe there will be more one day!  Reach for the stars.
 
 __ https://git-scm.com/docs/githooks/2.24.0
 .. _Aborts git push: pre-push_
+__ https://git-scm.com/docs/git-rebase/2.40.0
+   #Documentation/git-rebase.txt---autosquash
 __ https://git-scm.com/docs/gitformat-signature/2.40.0
 
 .. |Aborts git push| replace:: Aborts :sh:`git push`
+.. |autosquash prefixes|
+   replace:: "amend! ", "fixup! ", or "squash! "
 
 
 Requirements

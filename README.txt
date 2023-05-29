@@ -6,11 +6,12 @@ These are some Git hooks [1] I use regularly.
 pre-push-no-WIP
 
     Aborts `git push` if any outgoing commit message begins with any of
-    the following strings:
+    the following strings (whitespace included):
 
       - "(FIXUP)", "(NOCOMMIT)", "(REWORD)", "(SQUASH)", or "(WIP)"
       - "[FIXUP]", etc.
       - "{FIXUP}", etc.
+      - "amend! ", "fixup! ", or "squash! " [2]
 
 pre-push-require-sigs
 
@@ -128,6 +129,7 @@ References
 ----------
 
  1. https://git-scm.com/docs/githooks/2.24.0
+ 2. https://git-scm.com/docs/git-rebase/2.40.0#Documentation/git-rebase.txt---autosquash
  3. https://git-scm.com/docs/gitformat-signature/2.40.0
  4. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
  6. https://www.shellcheck.net
