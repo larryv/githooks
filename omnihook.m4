@@ -97,26 +97,26 @@ dnl TODO: Dynamically wrap this comment somehow.
 ifdef([USE_STDIN_CACHE],
 [# Deletes temporary files.
 cleanup() {
-    if test "$stdin_cache"; then
-        rm -f -- "$stdin_cache"
-    fi
+	if test "$stdin_cache"; then
+		rm -f -- "$stdin_cache"
+	fi
 }
 
 # Sends the given signal to the current shell process.
 self_signal() {
-    if test "$#" -eq 1 && test "$1"; then
-        if kill -0 "$$" 2>/dev/null; then
-            # Some implementations (e.g., BusyBox [1]) only have `-SIG`.
-            kill "-$1" "$$"
-        else
-            # POSIX.1-2017 allows `kill -s SIG` without `kill -SIG` [2],
-            # although I don't know of any implementations that do this.
-            kill -s "$1" "$$"
-        fi
-    else
-        echo 'usage: self_signal sig' >&2
-        return 1
-    fi
+	if test "$#" -eq 1 && test "$1"; then
+		if kill -0 "$$" 2>/dev/null; then
+			# Some implementations (e.g., BusyBox [1]) only have `-SIG`.
+			kill "-$1" "$$"
+		else
+			# POSIX.1-2017 allows `kill -s SIG` without `kill -SIG` [2],
+			# although I don't know of any implementations that do this.
+			kill -s "$1" "$$"
+		fi
+	else
+		echo 'usage: self_signal sig' >&2
+		return 1
+	fi
 }
 
 ])dnl
@@ -144,9 +144,9 @@ xsi_sigs="$posix_sigs POLL PROF SYS TRAP VTALRM XCPU XFSZ"
 aix_sigs='GRANT MIGRATE MSG PRE RETRACT SAK SOUND TALRM'
 other_sigs='EMT IOT LOST STKFLT'
 for sig in $xsi_sigs $aix_sigs $other_sigs; do
-    # Self-signal to inform the caller of the abnormal exit [7].
-    # shellcheck disable=SC2064
-    trap "cleanup; trap $sig; self_signal $sig" "$sig" 2>/dev/null
+	# Self-signal to inform the caller of the abnormal exit [7].
+	# shellcheck disable=SC2064
+	trap "cleanup; trap $sig; self_signal $sig" "$sig" 2>/dev/null
 done
 
 # Cache standard input to pass along to the invoked hooks.
@@ -154,11 +154,11 @@ cat >"$stdin_cache" || exit
 
 ])dnl
 for hook in "$hooks_dir"/defn([HOOK])-*; do
-    # Ignore nonexecutable hooks because Git does.  Technically there's
-    # a TOCTOU bug here, but I don't think it's worth worrying about.
-    if test -f "$hook" && test -x "$hook"; then
-        "$hook" "$@" ifdef([USE_STDIN_CACHE], [<"$stdin_cache" ])|| exit
-    fi
+	# Ignore nonexecutable hooks because Git does.  Technically there's
+	# a TOCTOU bug here, but I don't think it's worth worrying about.
+	if test -f "$hook" && test -x "$hook"; then
+		"$hook" "$@" ifdef([USE_STDIN_CACHE], [<"$stdin_cache" ])|| exit
+	fi
 done
 
 # References

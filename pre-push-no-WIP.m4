@@ -55,40 +55,40 @@ exec >&2
 exit_status=0
 
 while read -r local_ref local_sha1 remote_ref remote_sha1; do
-    if test "$local_sha1" = 0000000000000000000000000000000000000000; then
-        # Deleting a remote ref doesn't push any commits.
-        continue
-    elif test "$remote_sha1" = 0000000000000000000000000000000000000000; then
-        # Creating new remote ref.
-        range=$local_sha1
-    else
-        # Updating existing remote ref.
-        range=$remote_sha1..$local_sha1
-    fi
+	if test "$local_sha1" = 0000000000000000000000000000000000000000; then
+		# Deleting a remote ref doesn't push any commits.
+		continue
+	elif test "$remote_sha1" = 0000000000000000000000000000000000000000; then
+		# Creating new remote ref.
+		range=$local_sha1
+	else
+		# Updating existing remote ref.
+		range=$remote_sha1..$local_sha1
+	fi
 
-    git rev-list --pretty='%h %s' --extended-[regexp --regexp]-ignore-case \
-        --grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
-        --grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \
-        --grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
-        "$range" \
-    | (
-        # There's nothing to do if there's no input.  If there is input,
-        # discard the first line, which is a "commit [full SHA1]" line.
-        read -r || exit
+	git rev-list --pretty='%h %s' --extended-[regexp --regexp]-ignore-case \
+		--grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
+		--grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \
+		--grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
+		"$range" \
+	| (
+		# There's nothing to do if there's no input.  If there is input,
+		# discard the first line, which is a "commit [full SHA1]" line.
+		read -r || exit
 
-        # Print a blank line between ranges.
-        if test "$exit_status" -ne 0; then
-            echo
-        fi
+		# Print a blank line between ranges.
+		if test "$exit_status" -ne 0; then
+			echo
+		fi
 
-        printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
-        printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
+		printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
+		printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
 
-        # Only the "oneline" pretty-format omits "commit [full SHA1]"
-        # lines, so we have to discard them ourselves.  Let everything
-        # else through.
-        sed '/^commit /d'
-    ) && exit_status=1
+		# Only the "oneline" pretty-format omits "commit [full SHA1]"
+		# lines, so we have to discard them ourselves.  Let everything
+		# else through.
+		sed '/^commit /d'
+	) && exit_status=1
 done
 
 exit "$exit_status"

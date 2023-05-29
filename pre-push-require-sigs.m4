@@ -52,56 +52,56 @@ exec >&2
 exit_status=0
 
 while read -r local_ref local_sha1 remote_ref remote_sha1; do
-    if test "$local_sha1" = 0000000000000000000000000000000000000000; then
-        # Deleting a remote ref doesn't push any commits.
-        continue
-    elif test "$remote_sha1" = 0000000000000000000000000000000000000000; then
-        # Creating new remote ref.
-        range=$local_sha1
-    else
-        # Updating existing remote ref.
-        range=$remote_sha1..$local_sha1
-    fi
+	if test "$local_sha1" = 0000000000000000000000000000000000000000; then
+		# Deleting a remote ref doesn't push any commits.
+		continue
+	elif test "$remote_sha1" = 0000000000000000000000000000000000000000; then
+		# Creating new remote ref.
+		range=$local_sha1
+	else
+		# Updating existing remote ref.
+		range=$remote_sha1..$local_sha1
+	fi
 
-    git rev-list --pretty='%h %G? %s' "$range" | {
-        # I tried this in awk(1) but gave up due to an overabundance of
-        # implementation wrinkles.  (See commit 2ef18bd.)
+	git rev-list --pretty='%h %G? %s' "$range" | {
+		# I tried this in awk(1) but gave up due to an overabundance of
+		# implementation wrinkles.  (See commit 2ef18bd.)
 
-        range_blocked=no
+		range_blocked=no
 
-        # Every other line is "commit [full SHA1]", which we don't want.
-        # (Only the "oneline" pretty-format omits them.)
-        while read -r && read -r hash sig_status subject; do
-            # See git-rev-list(1) for possible outputs of '%G?'.
-            case $sig_status in
-                [[GUXYR]]) continue ;;
-                B) sig_status_msg='bad signature' ;;
-                E) sig_status_msg="cannot check signature" ;;
-                N) sig_status_msg='no signature' ;;
-                *) sig_status_msg='unknown signature status' ;;
-            esac
+		# Every other line is "commit [full SHA1]", which we don't want.
+		# (Only the "oneline" pretty-format omits them.)
+		while read -r && read -r hash sig_status subject; do
+			# See git-rev-list(1) for possible outputs of '%G?'.
+			case $sig_status in
+				[[GUXYR]]) continue ;;
+				B) sig_status_msg='bad signature' ;;
+				E) sig_status_msg="cannot check signature" ;;
+				N) sig_status_msg='no signature' ;;
+				*) sig_status_msg='unknown signature status' ;;
+			esac
 
-            if test "$range_blocked" = no; then
-                range_blocked=yes
+			if test "$range_blocked" = no; then
+				range_blocked=yes
 
-                # Print a blank line between ranges.
-                if test "$exit_status" -ne 0; then
-                    echo
-                fi
+				# Print a blank line between ranges.
+				if test "$exit_status" -ne 0; then
+					echo
+				fi
 
-                printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
-                printf '%s: commits in %s without good signatures:\n' \
-                    "${0##*/}" "$local_ref"
-            fi
+				printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
+				printf '%s: commits in %s without good signatures:\n' \
+					"${0##*/}" "$local_ref"
+			fi
 
-            printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
-        done
+			printf '%s %s: %s\n' "$hash" "$sig_status_msg" "$subject"
+		done
 
-        # https://mywiki.wooledge.org/BashFAQ/024 - The enclosing
-        # command grouping may run in a subshell, so use the exit status
-        # of the pipeline to set 'exit_status' on the outside.
-        test "$range_blocked" = yes
-    } && exit_status=1
+		# https://mywiki.wooledge.org/BashFAQ/024 - The enclosing
+		# command grouping may run in a subshell, so use the exit status
+		# of the pipeline to set 'exit_status' on the outside.
+		test "$range_blocked" = yes
+	} && exit_status=1
 done
 
 exit "$exit_status"
