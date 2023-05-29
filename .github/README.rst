@@ -66,10 +66,9 @@ Requirements
 
 - Git__, obviously
 
-- A `shell that conforms to POSIX`__ or comes close enough
-  [#good-shells]_
+- A `shell that substantially conforms to POSIX`__ [#good-shells]_
 
-- The usual Unix tools, including:
+- A `Unix toolset that substantially conforms to POSIX`__, including:
 
   - |m4|__ (build)
 
@@ -88,6 +87,7 @@ Requirements
 
 __ https://git-scm.com
 __ https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
+__ https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html
 __ https://pubs.opengroup.org/onlinepubs/9699919799/utilities/m4.html
 __ https://www.shellcheck.net
 __ https://gnupg.org/documentation/manuals/gnupg/Invoking-GPG.html

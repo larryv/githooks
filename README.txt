@@ -27,9 +27,9 @@ Requirements
 
   - Git, obviously
 
-  - A shell that conforms to POSIX [4] or comes close enough [A]
+  - A shell that substantially conforms to POSIX [4][A]
 
-  - The usual Unix tools, including:
+  - A Unix toolset that substantially conforms to POSIX [5], including:
 
       - m4(1) (build)
 
@@ -132,6 +132,7 @@ References
  2. https://git-scm.com/docs/git-rebase/2.40.0#Documentation/git-rebase.txt---autosquash
  3. https://git-scm.com/docs/gitformat-signature/2.40.0
  4. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html
+ 5. https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html
  6. https://www.shellcheck.net
  7. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgprogram
  8. https://git-scm.com/docs/git-config/2.40.0#Documentation/git-config.txt-gpgltformatgtprogram
