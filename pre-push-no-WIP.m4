@@ -33,9 +33,9 @@ divert[]dnl
 #
 undivert(1)dnl
 
-# -------------------------------------------------------------------
-# Exits with a nonzero status if any outgoing commit message contains
-# a line beginning with any of the following strings (ignoring case):
+# ----------------------------------------------------------------------
+# Exits with a nonzero status if any outgoing commit message begins with
+# any of the following strings (ignoring case):
 #
 #   - "(FIXUP)", "(NOCOMMIT)", "(REWORD)", "(SQUASH)", or "(WIP)"
 #   - "[FIXUP]", etc.
@@ -44,13 +44,18 @@ undivert(1)dnl
 # Exits with a zero status otherwise.
 #
 # See also: https://git-scm.com/docs/githooks/2.24.0#_pre_push
-# -------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 exec >&2
 
 # Git prepends its exec directory to PATH, so this just works.
 # shellcheck source=/dev/null  # I don't want to check Git's code.
 . git-sh-setup
+
+wip_re=\
+['^[^ ]+ \((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))
+^[^ ]+ \{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}
+^[^ ]+ \[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]']
 
 rc=0
 
@@ -67,12 +72,10 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 	fi
 
 	if
-		git rev-list --oneline --extended-[regexp --regexp]-ignore-case \
-			--grep='^\((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))' \
-			--grep='^\{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}' \
-			--grep='^\[[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]]' \
-			"$range" \
-		| (
+		# Filter with an external utility because "git rev-list
+		# --grep" applies its pattern linewise and cannot limit
+		# matches to the beginnings of messages.
+		git rev-list --oneline "$range" | grep -Eie "$wip_re" | (
 			# If there's no input, there are no WIP commits.
 			read -r first_line || exit
 
