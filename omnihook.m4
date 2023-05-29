@@ -24,7 +24,7 @@ dnl
 divert(-1)
 
 dnl Validate given hook name and configure behavior appropriately.
-undefine([USE_STDIN_CACHE])
+undefine([READS_STDIN])
 ifdef([HOOK],
       [ifelse(defn([HOOK]), [applypatch-msg], [],
               defn([HOOK]), [commit-msg], [],
@@ -38,16 +38,16 @@ ifdef([HOOK],
               defn([HOOK]), [post-commit], [],
               defn([HOOK]), [post-index-change], [],
               defn([HOOK]), [post-merge], [],
-              defn([HOOK]), [post-receive], [define([USE_STDIN_CACHE])],
-              defn([HOOK]), [post-rewrite], [define([USE_STDIN_CACHE])],
+              defn([HOOK]), [post-receive], [define([READS_STDIN])],
+              defn([HOOK]), [post-rewrite], [define([READS_STDIN])],
               defn([HOOK]), [post-update], [],
               defn([HOOK]), [pre-applypatch], [],
               defn([HOOK]), [pre-auto-gc], [],
               defn([HOOK]), [pre-commit], [],
               defn([HOOK]), [pre-merge-commit], [],
-              defn([HOOK]), [pre-push], [define([USE_STDIN_CACHE])],
+              defn([HOOK]), [pre-push], [define([READS_STDIN])],
               defn([HOOK]), [pre-rebase], [],
-              defn([HOOK]), [pre-receive], [define([USE_STDIN_CACHE])],
+              defn([HOOK]), [pre-receive], [define([READS_STDIN])],
               defn([HOOK]), [prepare-commit-msg], [],
               defn([HOOK]), [proc-receive], [],
               defn([HOOK]), [push-to-checkout], [],
@@ -94,7 +94,7 @@ dnl TODO: Dynamically wrap this comment somehow.
 # shellcheck source=/dev/null  # I don't want to check Git's code.
 . git-sh-setup
 
-ifdef([USE_STDIN_CACHE],
+ifdef([READS_STDIN],
 [# Deletes temporary files.
 cleanup() {
 	if test "$stdin_cache"; then
@@ -124,7 +124,7 @@ self_signal() {
 hooks_dir=$(git rev-parse --git-path hooks && echo .) || exit
 hooks_dir=${hooks_dir%??}
 
-ifdef([USE_STDIN_CACHE],
+ifdef([READS_STDIN],
 [# Generate temporary pathname.  $HOME is private, so don't worry about
 # malicious symbolic links and such [4].  (Ill-gotten write access to
 # $HOME is decidedly out of scope here.)
@@ -157,7 +157,7 @@ for hook in "$hooks_dir"/defn([HOOK])-*; do
 	# Ignore nonexecutable hooks because Git does.  Technically there's
 	# a TOCTOU bug here, but I don't think it's worth worrying about.
 	if test -f "$hook" && test -x "$hook"; then
-		"$hook" "$@" ifdef([USE_STDIN_CACHE], [<"$stdin_cache" ])|| exit
+		"$hook" "$@" ifdef([READS_STDIN], [<"$stdin_cache" ])|| exit
 	fi
 done
 
