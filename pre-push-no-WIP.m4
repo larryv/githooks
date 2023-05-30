@@ -61,6 +61,10 @@ wip_re=\
 ^[^ ]+ \[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]
 ^[^ ]+ (amend|fixup|squash)![ ]']
 
+err() {
+	printf '%s: %s\n' "${0##*/}" "$*" >&2
+}
+
 rc=0
 
 while read -r local_ref local_sha1 remote_ref remote_sha1; do
@@ -89,8 +93,8 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 			fi
 
 			# Print a summary, then the commit list.
-			printf '%s: blocked push to %s\n' "${0##*/}" "$remote_ref"
-			printf '%s: WIP commits in %s:\n' "${0##*/}" "$local_ref"
+			err "blocked push to $remote_ref"
+			err "WIP commits in $local_ref:"
 			printf %s\\n "$first_line"
 			cat
 
