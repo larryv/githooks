@@ -6,7 +6,7 @@ These are some Git hooks [1] I use regularly.
 pre-push-no-WIP
 
     Aborts `git push` if any outgoing commit message begins with any of
-    the following strings (ignoring case):
+    the following strings:
 
       - "(FIXUP)", "(NOCOMMIT)", "(REWORD)", "(SQUASH)", or "(WIP)"
       - "[FIXUP]", etc.

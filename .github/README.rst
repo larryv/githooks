@@ -36,7 +36,7 @@ These are some `Git hooks`__ I use regularly.
 
 |pre-push-no-WIP|_
     |Aborts git push|_ if any outgoing commit message begins with any of
-    the following strings (ignoring case):
+    the following strings:
 
     - ``(FIXUP)``, ``(NOCOMMIT)``, ``(REWORD)``, ``(SQUASH)``, or
       ``(WIP)``

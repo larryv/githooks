@@ -35,7 +35,7 @@ undivert(1)dnl
 
 # ----------------------------------------------------------------------
 # Exits with a nonzero status if any outgoing commit message begins with
-# any of the following strings (ignoring case):
+# any of the following strings:
 #
 #   - "(FIXUP)", "(NOCOMMIT)", "(REWORD)", "(SQUASH)", or "(WIP)"
 #   - "[FIXUP]", etc.
@@ -75,7 +75,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 		# Filter with an external utility because "git rev-list
 		# --grep" applies its pattern linewise and cannot limit
 		# matches to the beginnings of messages.
-		git rev-list --oneline "$range" | grep -Eie "$wip_re" | (
+		git rev-list --oneline "$range" | grep -Ee "$wip_re" | (
 			# If there's no input, there are no WIP commits.
 			read -r first_line || exit
 
