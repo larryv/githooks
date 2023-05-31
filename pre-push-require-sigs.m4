@@ -46,8 +46,6 @@ undivert(1)dnl
 # I tried writing this whole thing in awk(1) but gave up due to an
 # overabundance of implementation wrinkles.  (See commit 2ef18bd.)
 
-exec >&2
-
 # Git prepends its exec directory to PATH, so this just works.
 # shellcheck source=/dev/null  # I don't want to check Git's code.
 . git-sh-setup
@@ -98,7 +96,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 
 			# Ensure rc gets set to 1.
 			:
-		)
+		) >&2
 	then
 		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
 		# from inside the pipeline is not portable, so use the

@@ -49,8 +49,6 @@ undivert(1)dnl
 #   - https://git-scm.com/docs/git-rebase/2.40.0#Documentation/git-rebase.txt---autosquash
 # ----------------------------------------------------------------------
 
-exec >&2
-
 # Git prepends its exec directory to PATH, so this just works.
 # shellcheck source=/dev/null  # I don't want to check Git's code.
 . git-sh-setup
@@ -100,7 +98,7 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 
 			# Ensure rc gets set to 1.
 			:
-		)
+		) >&2
 	then
 		# https://mywiki.wooledge.org/BashFAQ/024 - Setting rc
 		# from inside the pipeline is not portable, so use the
