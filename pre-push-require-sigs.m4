@@ -69,17 +69,19 @@ while read -r local_ref local_sha1 remote_ref remote_sha1; do
 	fi
 
 	if
-		git rev-list --pretty='%h %G? %s' "$range" | awk '
-			# Skip good commits and commit headers.  (Git
-			# 2.33 and later have --no-commit-header.)
-			# Print bad commits with more helpful statuses.
-			$1 != "commit" &&
-			$2 = $2 ~ [/^[GUXYR]$/] ? "" : \
-			     $2 == "B" ? "(bad signature)" : \
-			     $2 == "E" ? "(cannot check signature)" : \
-			     $2 == "N" ? "(no signature)" : \
-			                 "(unknown signature status)"
-		' | (
+		git rev-list --pretty=%h%n%G\?%n%s%n "$range" | awk '
+			# Skip good commits.  Print bad commits with
+			# more helpful statuses.
+			$3 = $3 ~ [/^[GUXYR]$/] ? "" : \
+			     $3 == "B" ? "(bad signature)" : \
+			     $3 == "E" ? "(cannot check signature)" : \
+			     $3 == "N" ? "(no signature)" : \
+			                 "(unknown signature status)" {
+				# Omit commit headers.  (Git 2.33 and
+				# later have --no-commit-header.)
+				print $2, $3, $4
+			}
+		' FS=\\n RS= | (
 			# If there's no input, there are no bad commits.
 			read -r first_line || exit
 
