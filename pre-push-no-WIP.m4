@@ -37,9 +37,9 @@ undivert(1)dnl
 # Exits with a nonzero status if any outgoing commit message begins with
 # any of the following strings (whitespace included):
 #
-#   - "(FIXUP)", "(NOCOMMIT)", "(REWORD)", "(SQUASH)", or "(WIP)"
-#   - "[FIXUP]", etc.
-#   - "{FIXUP}", etc.
+#   - "(FIXUP) ", "(NOCOMMIT) ", "(REWORD) ", "(SQUASH) ", or "(WIP) "
+#   - "[FIXUP] ", etc.
+#   - "{FIXUP} ", etc.
 #   - "amend! ", "fixup! ", or "squash! "
 #
 # Exits with a zero status otherwise.
@@ -54,9 +54,9 @@ undivert(1)dnl
 . git-sh-setup
 
 wip_re=\
-['^[^ ]+ \((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))
-^[^ ]+ \{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}
-^[^ ]+ \[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]
+['^[^ ]+ \((FIXUP|NOCOMMIT|REWORD|SQUASH|WIP))( |$)
+^[^ ]+ \{(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)}( |$)
+^[^ ]+ \[(FIXUP|NOCOMMIT|REWORD|SQUASH|WIP)]( |$)
 ^[^ ]+ (amend|fixup|squash)![ ]']
 
 err() {

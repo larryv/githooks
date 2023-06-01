@@ -38,10 +38,9 @@ These are some `Git hooks`__ I use regularly.
     |Aborts git push|_ if any outgoing commit message begins with any of
     the following strings (whitespace included):
 
-    - ``(FIXUP)``, ``(NOCOMMIT)``, ``(REWORD)``, ``(SQUASH)``, or
-      ``(WIP)``
-    - ``[FIXUP]``, etc.
-    - ``{FIXUP}``, etc.
+    - "(FIXUP) ", "(NOCOMMIT) ", "(REWORD) ", "(SQUASH) ", or "(WIP) "
+    - "[FIXUP] ", etc.
+    - "{FIXUP} ", etc.
     - |autosquash prefixes|__
 
 |pre-push-require-sigs|_
