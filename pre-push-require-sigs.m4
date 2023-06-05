@@ -56,17 +56,23 @@ err() {
 
 rc=0
 
-while read -r local_ref local_sha1 remote_ref remote_sha1; do
-	if test "$local_sha1" = 0000000000000000000000000000000000000000; then
-		# Deleting a remote ref doesn't push any commits.
-		continue
-	elif test "$remote_sha1" = 0000000000000000000000000000000000000000; then
-		# Creating new remote ref.
-		range=$local_sha1
-	else
-		# Updating existing remote ref.
-		range=$remote_sha1..$local_sha1
-	fi
+while read -r local_ref local_obj remote_ref remote_obj; do
+	# Of the characters that cannot appear in reference names (see
+	# git-check-ref-format(1)), ":" is the easiest to work with.
+	[case $local_obj:$remote_obj in
+		*[!0]*:*[!0]*)
+			# Updating existing remote ref.
+			range=$remote_obj..$local_obj
+			;;
+		*[!0]*:?*)
+			# Creating new remote ref.
+			range=$local_obj
+			;;
+		?*:*[!0]*)
+			# Deleting existing remote ref; nothing to push.
+			continue
+			;;
+	esac]
 
 	if
 		git rev-list --pretty=%h%n%G\?%n%s%n "$range" | awk '
