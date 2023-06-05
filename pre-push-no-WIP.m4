@@ -68,18 +68,24 @@ rc=0
 while read -r local_ref local_obj remote_ref remote_obj; do
 	# Of the characters that cannot appear in reference names (see
 	# git-check-ref-format(1)), ":" is the easiest to work with.
-	[case $local_obj:$remote_obj in
-		*[!0]*:*[!0]*)
+	[case $local_ref:$local_obj:$remote_ref:$remote_obj in
+		?*:*[!0]*:?*:*[!0]*)
 			# Updating existing remote ref.
 			range=$remote_obj..$local_obj
 			;;
-		*[!0]*:?*)
+		?*:*[!0]*:?*:?*)
 			# Creating new remote ref.
 			range=$local_obj
 			;;
-		?*:*[!0]*)
+		?*:?*:?*:*[!0]*)
 			# Deleting existing remote ref; nothing to push.
 			continue
+			;;
+		*)
+			# Git is unlikely to provide invalid input, so
+			# there's no real need for detailed feedback.
+			err 'invalid standard input provided'
+			exit 1
 			;;
 	esac]
 
