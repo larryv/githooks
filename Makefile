@@ -64,9 +64,11 @@ clean: FORCE
 # `install FOO BAR` varies *significantly* among implementations. Ensure
 # consistent results by detecting this situation early and bailing out.
 install: FORCE all installdirs
-	@for f in $(pkglibexec_SCRIPTS); do \
+	@for f in $(pkglibexec_SCRIPTS); \
+do \
     p=$(DESTDIR)$(pkglibexecdir)/$$f; \
-    if test -d "$$p"; then \
+    if test -d "$$p"; \
+    then \
         printf 'will not overwrite directory: %s\n' "$$p" >&2; \
         exit 1; \
     fi; \

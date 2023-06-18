@@ -97,15 +97,18 @@ dnl TODO: Dynamically wrap this comment somehow.
 ifdef([READS_STDIN],
 [# Deletes temporary files.
 cleanup() {
-	if test "$stdin_cache"; then
+	if test "$stdin_cache"
+	then
 		rm -f -- "$stdin_cache"
 	fi
 }
 
 # Sends the given signal to the current shell process.
 self_signal() {
-	if test "$#" -eq 1 && test "$1"; then
-		if kill -0 "$$" 2>/dev/null; then
+	if test "$#" -eq 1 && test "$1"
+	then
+		if kill -0 "$$" 2>/dev/null
+		then
 			# Some implementations only have `-SIG` (e.g.,
 			# BusyBox [1]).
 			kill "-$1" "$$"
@@ -145,7 +148,8 @@ posix_sigs='ABRT ALRM BUS FPE HUP ILL INT PIPE QUIT SEGV TERM USR1 USR2'
 xsi_sigs="$posix_sigs POLL PROF SYS TRAP VTALRM XCPU XFSZ"
 aix_sigs='GRANT MIGRATE MSG PRE RETRACT SAK SOUND TALRM'
 other_sigs='EMT IOT LOST STKFLT'
-for sig in $xsi_sigs $aix_sigs $other_sigs; do
+for sig in $xsi_sigs $aix_sigs $other_sigs
+do
 	# Self-signal to inform the caller of the abnormal exit [7].
 	# shellcheck disable=SC2064
 	trap "cleanup; trap $sig; self_signal $sig" "$sig" 2>/dev/null
@@ -155,10 +159,12 @@ done
 cat >"$stdin_cache" || exit
 
 ])dnl
-for hook in "$hooks_dir"/defn([HOOK])-*; do
+for hook in "$hooks_dir"/defn([HOOK])-*
+do
 	# Ignore nonexecutable hooks, as Git does.  Technically there's
 	# a TOCTOU bug here, but it's not worth worrying about.
-	if test -f "$hook" && test -x "$hook"; then
+	if test -f "$hook" && test -x "$hook"
+	then
 		"$hook" "$@" ifdef([READS_STDIN], [<"$stdin_cache" ])|| exit
 	fi
 done

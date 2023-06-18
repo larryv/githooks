@@ -65,7 +65,8 @@ err() {
 
 rc=0
 
-while read -r local_ref local_obj remote_ref remote_obj; do
+while read -r local_ref local_obj remote_ref remote_obj
+do
 	# Of the characters that cannot appear in reference names (see
 	# git-check-ref-format(1)), ":" is the easiest to work with.
 	[case $local_ref:$local_obj:$remote_ref:$remote_obj in
@@ -98,7 +99,8 @@ while read -r local_ref local_obj remote_ref remote_obj; do
 			read -r first_line || exit
 
 			# Print an empty line between commit lists.
-			if test "$rc" -ne 0; then
+			if test "$rc" -ne 0
+			then
 				echo
 			fi
 
