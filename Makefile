@@ -43,6 +43,8 @@ prefix = /usr/local
 # ----------------
 # "PRIVATE" MACROS
 
+# Clear CDPATH to preclude unexpected cd(1) behavior [1].
+do_cd = CDPATH= cd
 do_cleanup = { rc=$$?; rm -f -- $@ && exit "$$rc"; }
 do_m4 = $(M4) $(M4FLAGS) -D SHELL=$(SHELL)
 pkglibexec_SCRIPTS = pre-push pre-push-no-WIP pre-push-require-sigs
@@ -77,15 +79,14 @@ done
 
 # Depending on "install" would overwrite an existing installation.
 installcheck: FORCE
-	CDPATH= cd -- $(DESTDIR)$(pkglibexecdir) \
+	$(do_cd) -- $(DESTDIR)$(pkglibexecdir) \
     && $(SHELLCHECK) $(SHELLCHECKFLAGS) -- $(pkglibexec_SCRIPTS)
 
 installdirs: FORCE
 	$(INSTALL) -d -- $(DESTDIR)$(pkglibexecdir)
 
-# Clear CDPATH to preclude unexpected cd(1) behavior [1].
 uninstall: FORCE
-	CDPATH= cd -- $(DESTDIR)$(pkglibexecdir) \
+	$(do_cd) -- $(DESTDIR)$(pkglibexecdir) \
     && rm -f -- $(pkglibexec_SCRIPTS)
 
 
