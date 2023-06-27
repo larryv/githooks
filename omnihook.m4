@@ -91,7 +91,7 @@ dnl TODO: Dynamically wrap this comment somehow.
 # ----------------------------------------------------------------------
 
 # Git prepends its exec directory to PATH, so this just works.
-# shellcheck source=/dev/null  # I don't want to check Git's code.
+# shellcheck source=/dev/null
 . git-sh-setup
 
 ifdef([READS_STDIN],
@@ -109,12 +109,12 @@ self_signal() {
 	then
 		if kill -0 "$$" 2>/dev/null
 		then
-			# Some implementations only have `-SIG` (e.g.,
-			# BusyBox [1]).
+			# Some kill(1) implementations only have "-SIG"
+			# (e.g., BusyBox [1]).
 			kill "-$1" "$$"
 		else
-			# POSIX.1-2017 allows implementations to have
-			# `-s SIG` without `-SIG` [2], although I don't
+			# POSIX.1-2017 allows kill(1) implementations to
+			# have "-s SIG" without "-SIG" [2], but I don't
 			# know of any that do so.
 			kill -s "$1" "$$"
 		fi
@@ -130,9 +130,7 @@ hooks_dir=$(git rev-parse --git-path hooks && echo .) || exit
 hooks_dir=${hooks_dir%??}
 
 ifdef([READS_STDIN],
-[# Generate temporary pathname.  $HOME is private, so don't worry about
-# malicious symbolic links and such [4].  (Ill-gotten write access to
-# $HOME is decidedly out of scope here.)
+[# Generate temporary pathname.
 # shellcheck disable=SC3028
 hostname=${HOSTNAME:-${HOST:-$(hostname 2>/dev/null)}}
 stdin_cache=~/.githooks.defn([HOOK]).stdin${hostname:+.$hostname}.$$
@@ -141,8 +139,8 @@ stdin_cache=~/.githooks.defn([HOOK]).stdin${hostname:+.$hostname}.$$
 trap cleanup EXIT
 
 # Clean up upon receiving a default-fatal signal.  Handle signals that
-# are in POSIX.1-2017 [5], as well as nonstandard signals from a variety
-# of systems [6] (although most of these are unlikely to be delivered in
+# are in POSIX.1-2017 [4], as well as nonstandard signals from a variety
+# of systems [5] (although most of these are unlikely to be delivered in
 # uncontrived conditions).
 posix_sigs='ABRT ALRM BUS FPE HUP ILL INT PIPE QUIT SEGV TERM USR1 USR2'
 xsi_sigs="$posix_sigs POLL PROF SYS TRAP VTALRM XCPU XFSZ"
@@ -150,12 +148,15 @@ aix_sigs='GRANT MIGRATE MSG PRE RETRACT SAK SOUND TALRM'
 other_sigs='EMT IOT LOST STKFLT'
 for sig in $xsi_sigs $aix_sigs $other_sigs
 do
-	# Self-signal to inform the caller of the abnormal exit [7].
+	# Self-signal to inform the caller of the abnormal exit [6].
 	# shellcheck disable=SC2064
 	trap "cleanup; trap $sig; self_signal $sig" "$sig" 2>/dev/null
 done
 
-# Cache standard input to pass along to the invoked hooks.
+# Cache standard input to pass along to the invoked hooks.  The user's
+# home directory is private, so don't worry about malicious symbolic
+# links and such [7].  (Worrying about ill-gotten write access to the
+# home directory is decidedly out of scope here.)
 cat >"$stdin_cache" || exit
 
 ])dnl
@@ -173,7 +174,7 @@ done
 #  1. https://busybox.net/downloads/BusyBox.html#kill
 #  2. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/kill.html
 #  3. https://www.etalabs.net/sh_tricks.html
-#  4. https://mywiki.wooledge.org/BashFAQ/062
-#  5. https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/signal.h.html
-#  6. https://docs.google.com/spreadsheets/d/1R7GgFyQMyEFfSwyj3J5aQr2mRAvnteSqQSz3t-qodYU/edit?usp=sharing
-#  7. https://mywiki.wooledge.org/SignalTrap
+#  4. https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/signal.h.html
+#  5. https://docs.google.com/spreadsheets/d/1R7GgFyQMyEFfSwyj3J5aQr2mRAvnteSqQSz3t-qodYU/edit?usp=sharing
+#  6. https://mywiki.wooledge.org/SignalTrap
+#  7. https://mywiki.wooledge.org/BashFAQ/062

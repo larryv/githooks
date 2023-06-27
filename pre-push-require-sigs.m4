@@ -47,7 +47,7 @@ undivert(1)dnl
 # overabundance of implementation wrinkles.  (See commit 2ef18bd.)
 
 # Git prepends its exec directory to PATH, so this just works.
-# shellcheck source=/dev/null  # I don't want to check Git's code.
+# shellcheck source=/dev/null
 . git-sh-setup
 
 err() {

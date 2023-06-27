@@ -23,7 +23,7 @@
 # ---------------
 # "PUBLIC" MACROS
 
-# Remember to update the READMEs after adding new macros here.
+# NOTE: Update the READMEs after adding new macros here.
 
 # Hard-coded into the shebangs of shell scripts.
 SHELL = /bin/sh
@@ -46,6 +46,8 @@ prefix = /usr/local
 # Clear CDPATH to preclude unexpected cd(1) behavior [1].
 do_cd = CDPATH= cd
 do_cleanup = { rc=$$?; rm -f -- $@ && exit "$$rc"; }
+# Insert M4FLAGS first to allow the use of System V options that must
+# precede -D [2].
 do_m4 = $(M4) $(M4FLAGS) -D SHELL=$(SHELL)
 pkglibexec_SCRIPTS = pre-push pre-push-no-WIP pre-push-require-sigs
 pkglibexecdir = $(libexecdir)/$(PACKAGE)
@@ -62,9 +64,9 @@ check: FORCE $(pkglibexec_SCRIPTS)
 clean: FORCE
 	rm -f -- $(pkglibexec_SCRIPTS)
 
-# If BAR/FOO is a directory or a symlink to one, then the behavior of
-# `install FOO BAR` varies *significantly* among implementations. Ensure
-# consistent results by detecting this situation early and bailing out.
+# If BAR/FOO is a directory or a symbolic link to one, then the behavior
+# of "install FOO BAR" varies *significantly* among implementations.
+# Ensures consistency by detecting this situation early and bailing out.
 install: FORCE all installdirs
 	@for f in $(pkglibexec_SCRIPTS); \
 do \
@@ -77,7 +79,8 @@ do \
 done
 	$(INSTALL_PROGRAM) -- $(pkglibexec_SCRIPTS) $(DESTDIR)$(pkglibexecdir)
 
-# Depending on "install" would overwrite an existing installation.
+# Intentionally does not depend on the "install" target, so a casual
+# "make installcheck" won't overwrite an existing installation.
 installcheck: FORCE
 	$(do_cd) -- $(DESTDIR)$(pkglibexecdir) \
     && $(SHELLCHECK) $(SHELLCHECKFLAGS) -- $(pkglibexec_SCRIPTS)
@@ -93,10 +96,10 @@ uninstall: FORCE
 # ---------------
 # "PRIVATE" RULES
 
-# Portably imitate .PHONY [2].
+# Portably imitate .PHONY [3].
 FORCE:
 
-# Portably imitate .DELETE_ON_ERROR [3] because m4(1) may fail after the
+# Portably imitate .DELETE_ON_ERROR [4] because m4(1) may fail after the
 # shell creates/truncates the target.
 
 pre-push: omnihook.m4
@@ -112,5 +115,6 @@ pre-push: omnihook.m4
 # REFERENCES
 #
 #  1. https://pubs.opengroup.org/onlinepubs/9699919799/utilities/cd.html
-#  2. https://www.gnu.org/software/make/manual/html_node/Force-Targets
-#  3. https://www.gnu.org/software/make/manual/html_node/Errors.html
+#  2. https://docs.oracle.com/cd/E88353_01/html/E37839/m4-1.html
+#  3. https://www.gnu.org/software/make/manual/html_node/Force-Targets
+#  4. https://www.gnu.org/software/make/manual/html_node/Errors.html

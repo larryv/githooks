@@ -50,7 +50,7 @@ undivert(1)dnl
 # ----------------------------------------------------------------------
 
 # Git prepends its exec directory to PATH, so this just works.
-# shellcheck source=/dev/null  # I don't want to check Git's code.
+# shellcheck source=/dev/null
 . git-sh-setup
 
 wip_re=\
@@ -91,9 +91,9 @@ do
 	esac]
 
 	if
-		# Filter with an external utility because "git rev-list
-		# --grep" applies its pattern linewise and cannot limit
-		# matches to the beginnings of messages.
+		# Filter with grep(1) because "git rev-list --grep"
+		# applies its pattern linewise and cannot limit matches
+		# to the beginnings of commit messages.
 		git rev-list --oneline "$range" | grep -Ee "$wip_re" | (
 			# If there's no input, there are no WIP commits.
 			read -r first_line || exit
